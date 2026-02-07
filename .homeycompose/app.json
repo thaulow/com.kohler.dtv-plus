@@ -22,6 +22,7 @@
     "large": "/assets/images/large.png",
     "xlarge": "/assets/images/xlarge.png"
   },
+  "homeyCommunityTopicId": 150733,
   "support": "https://github.com/thaulow/com.kohler.dtv-plus/issues",
   "author": {
     "name": "Thomas Thaulow",
