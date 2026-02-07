@@ -67,5 +67,8 @@
   },
   "1.0.22": {
     "en": "revert to thermostat, toogle to button"
+  },
+  "1.0.23": {
+    "en": "added toogle"
   }
 }
