@@ -1,3 +1,3 @@
-# KOHLER Konnect
+Control your Kohler DTV+ digital shower system directly from Homey. Manage shower zones, water temperature, steam sessions, lighting and audio all from one place. Select individual outlets, start saved presets and automate your shower experience with Homey flows.
 
-Control your Kohler DTV+ from Homey
+Pair your DTV+ controller by entering its IP address. Homey will automatically discover all connected hardware including valves, the Invigoration steamer, amplifier and light zones.

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Steam base/unit -->
+  <rect x="16" y="40" width="32" height="16" rx="3" fill="none" stroke="black" stroke-width="2"/>
+  <line x1="22" y1="48" x2="26" y2="48" stroke="black" stroke-width="2" stroke-linecap="round"/>
+  <!-- Steam wisps -->
+  <path d="M24 36 C24 32 20 30 20 26 C20 22 24 20 24 16" fill="none" stroke="black" stroke-width="2" stroke-linecap="round"/>
+  <path d="M32 36 C32 32 28 30 28 26 C28 22 32 20 32 16" fill="none" stroke="black" stroke-width="2" stroke-linecap="round"/>
+  <path d="M40 36 C40 32 36 30 36 26 C36 22 40 20 40 16" fill="none" stroke="black" stroke-width="2" stroke-linecap="round"/>
+</svg>
