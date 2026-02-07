@@ -1,0 +1,27 @@
+{
+  "title": {
+    "en": "Start shower preset"
+  },
+  "titleFormatted": {
+    "en": "Start shower preset [[preset]]"
+  },
+  "hint": {
+    "en": "Start a saved DTV+ shower preset"
+  },
+  "args": [
+    {
+      "type": "device",
+      "name": "device",
+      "filter": "driver_id=dtv+-system-controller"
+    },
+    {
+      "type": "number",
+      "name": "preset",
+      "title": { "en": "Preset number" },
+      "min": 1,
+      "max": 12,
+      "step": 1,
+      "placeholder": { "en": "1" }
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "title": {
+    "en": "Stop all shower activity"
+  },
+  "hint": {
+    "en": "Immediately stop all running water and steam"
+  },
+  "args": [
+    {
+      "type": "device",
+      "name": "device",
+      "filter": "driver_id=dtv+-system-controller"
+    }
+  ]
+}

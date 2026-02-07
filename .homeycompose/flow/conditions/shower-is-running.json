@@ -1,0 +1,15 @@
+{
+  "title": {
+    "en": "Shower water is running"
+  },
+  "hint": {
+    "en": "Check if water is flowing from any valve"
+  },
+  "args": [
+    {
+      "type": "device",
+      "name": "device",
+      "filter": "driver_id=dtv+-system-controller"
+    }
+  ]
+}

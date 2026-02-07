@@ -1,0 +1,523 @@
+{
+  "_comment": "This file is generated. Please edit .homeycompose/app.json instead.",
+  "id": "com.kohler.dtv-plus",
+  "version": "1.0.0",
+  "compatibility": ">=12.2.0",
+  "sdk": 3,
+  "platforms": [
+    "local"
+  ],
+  "name": {
+    "en": "KOHLER DTV+"
+  },
+  "description": {
+    "en": "Control your Kohler DTV+ from Homey"
+  },
+  "category": [
+    "appliances"
+  ],
+  "permissions": [],
+  "images": {
+    "small": "/assets/images/small.png",
+    "large": "/assets/images/large.png",
+    "xlarge": "/assets/images/xlarge.png"
+  },
+  "author": {
+    "name": "Thomas Thaulow",
+    "email": "thaulow@thaulow.co"
+  },
+  "flow": {
+    "triggers": [
+      {
+        "title": {
+          "en": "Water temperature changed"
+        },
+        "hint": {
+          "en": "Triggered when the actual water temperature changes"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=dtv+-six-port-valve"
+          }
+        ],
+        "tokens": [
+          {
+            "name": "temperature",
+            "type": "number",
+            "title": {
+              "en": "Temperature"
+            },
+            "example": 38.5
+          }
+        ],
+        "id": "valve-temperature-changed"
+      }
+    ],
+    "conditions": [
+      {
+        "title": {
+          "en": "Shower water is running"
+        },
+        "hint": {
+          "en": "Check if water is flowing from any valve"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=dtv+-system-controller"
+          }
+        ],
+        "id": "shower-is-running"
+      }
+    ],
+    "actions": [
+      {
+        "title": {
+          "en": "Start shower preset"
+        },
+        "titleFormatted": {
+          "en": "Start shower preset [[preset]]"
+        },
+        "hint": {
+          "en": "Start a saved DTV+ shower preset"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=dtv+-system-controller"
+          },
+          {
+            "type": "number",
+            "name": "preset",
+            "title": {
+              "en": "Preset number"
+            },
+            "min": 1,
+            "max": 12,
+            "step": 1,
+            "placeholder": {
+              "en": "1"
+            }
+          }
+        ],
+        "id": "start-preset"
+      },
+      {
+        "title": {
+          "en": "Start steam with duration"
+        },
+        "titleFormatted": {
+          "en": "Start steam at [[temperature]]°C for [[duration]] minutes"
+        },
+        "hint": {
+          "en": "Start the steam generator at a specific temperature and duration"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=invigoration-steamer"
+          },
+          {
+            "type": "range",
+            "name": "temperature",
+            "title": {
+              "en": "Temperature (°C)"
+            },
+            "min": 35,
+            "max": 48,
+            "step": 1
+          },
+          {
+            "type": "range",
+            "name": "duration",
+            "title": {
+              "en": "Duration (minutes)"
+            },
+            "min": 1,
+            "max": 60,
+            "step": 1
+          }
+        ],
+        "id": "start-steam-duration"
+      },
+      {
+        "title": {
+          "en": "Stop all shower activity"
+        },
+        "hint": {
+          "en": "Immediately stop all running water and steam"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=dtv+-system-controller"
+          }
+        ],
+        "id": "stop-shower"
+      }
+    ]
+  },
+  "drivers": [
+    {
+      "name": {
+        "en": "DTV+ Amplifier"
+      },
+      "class": "speaker",
+      "capabilities": [
+        "onoff",
+        "volume_set"
+      ],
+      "platforms": [
+        "local"
+      ],
+      "connectivity": [
+        "lan"
+      ],
+      "images": {
+        "small": "/drivers/dtv+-amplifier/assets/images/small.png",
+        "large": "/drivers/dtv+-amplifier/assets/images/large.png",
+        "xlarge": "/drivers/dtv+-amplifier/assets/images/xlarge.png"
+      },
+      "settings": [
+        {
+          "type": "group",
+          "label": {
+            "en": "Connection"
+          },
+          "children": [
+            {
+              "id": "address",
+              "type": "text",
+              "label": {
+                "en": "IP Address"
+              },
+              "hint": {
+                "en": "IP address of your Kohler DTV+ controller"
+              },
+              "value": ""
+            }
+          ]
+        }
+      ],
+      "pair": [
+        {
+          "id": "address",
+          "navigation": {
+            "next": "list_devices"
+          }
+        },
+        {
+          "id": "list_devices",
+          "template": "list_devices",
+          "navigation": {
+            "next": "add_devices"
+          }
+        },
+        {
+          "id": "add_devices",
+          "template": "add_devices"
+        }
+      ],
+      "id": "dtv+-amplifier"
+    },
+    {
+      "name": {
+        "en": "DTV+ Thermostatic Valve"
+      },
+      "class": "thermostat",
+      "capabilities": [
+        "onoff",
+        "target_temperature",
+        "measure_temperature"
+      ],
+      "capabilitiesOptions": {
+        "onoff": {
+          "title": {
+            "en": "Valve"
+          }
+        },
+        "target_temperature": {
+          "min": 30,
+          "max": 45,
+          "step": 0.5
+        }
+      },
+      "platforms": [
+        "local"
+      ],
+      "connectivity": [
+        "lan"
+      ],
+      "images": {
+        "small": "/drivers/dtv+-six-port-valve/assets/images/small.png",
+        "large": "/drivers/dtv+-six-port-valve/assets/images/large.png",
+        "xlarge": "/drivers/dtv+-six-port-valve/assets/images/xlarge.png"
+      },
+      "settings": [
+        {
+          "type": "group",
+          "label": {
+            "en": "Connection"
+          },
+          "children": [
+            {
+              "id": "address",
+              "type": "text",
+              "label": {
+                "en": "IP Address"
+              },
+              "hint": {
+                "en": "IP address of your Kohler DTV+ controller"
+              },
+              "value": ""
+            }
+          ]
+        }
+      ],
+      "pair": [
+        {
+          "id": "address",
+          "navigation": {
+            "next": "list_devices"
+          }
+        },
+        {
+          "id": "list_devices",
+          "template": "list_devices",
+          "navigation": {
+            "next": "add_devices"
+          }
+        },
+        {
+          "id": "add_devices",
+          "template": "add_devices"
+        }
+      ],
+      "id": "dtv+-six-port-valve"
+    },
+    {
+      "name": {
+        "en": "DTV+ System Controller"
+      },
+      "class": "other",
+      "capabilities": [
+        "onoff"
+      ],
+      "capabilitiesOptions": {
+        "onoff": {
+          "title": {
+            "en": "Shower"
+          }
+        }
+      },
+      "platforms": [
+        "local"
+      ],
+      "connectivity": [
+        "lan"
+      ],
+      "images": {
+        "small": "/drivers/dtv+-system-controller/assets/images/small.png",
+        "large": "/drivers/dtv+-system-controller/assets/images/large.png",
+        "xlarge": "/drivers/dtv+-system-controller/assets/images/xlarge.png"
+      },
+      "settings": [
+        {
+          "type": "group",
+          "label": {
+            "en": "Connection"
+          },
+          "children": [
+            {
+              "id": "address",
+              "type": "text",
+              "label": {
+                "en": "IP Address"
+              },
+              "hint": {
+                "en": "IP address of your Kohler DTV+ controller"
+              },
+              "value": ""
+            }
+          ]
+        }
+      ],
+      "pair": [
+        {
+          "id": "address",
+          "navigation": {
+            "next": "list_devices"
+          }
+        },
+        {
+          "id": "list_devices",
+          "template": "list_devices",
+          "navigation": {
+            "next": "add_devices"
+          }
+        },
+        {
+          "id": "add_devices",
+          "template": "add_devices"
+        }
+      ],
+      "id": "dtv+-system-controller"
+    },
+    {
+      "name": {
+        "en": "DTV+ Valve Outlet"
+      },
+      "class": "other",
+      "capabilities": [
+        "onoff"
+      ],
+      "capabilitiesOptions": {
+        "onoff": {
+          "title": {
+            "en": "Outlet"
+          }
+        }
+      },
+      "platforms": [
+        "local"
+      ],
+      "connectivity": [
+        "lan"
+      ],
+      "images": {
+        "small": "/drivers/dtv+-valve-outlet/assets/images/small.png",
+        "large": "/drivers/dtv+-valve-outlet/assets/images/large.png",
+        "xlarge": "/drivers/dtv+-valve-outlet/assets/images/xlarge.png"
+      },
+      "settings": [
+        {
+          "type": "group",
+          "label": {
+            "en": "Connection"
+          },
+          "children": [
+            {
+              "id": "address",
+              "type": "text",
+              "label": {
+                "en": "IP Address"
+              },
+              "hint": {
+                "en": "IP address of your Kohler DTV+ controller"
+              },
+              "value": ""
+            }
+          ]
+        }
+      ],
+      "pair": [
+        {
+          "id": "address",
+          "navigation": {
+            "next": "list_devices"
+          }
+        },
+        {
+          "id": "list_devices",
+          "template": "list_devices",
+          "navigation": {
+            "next": "add_devices"
+          }
+        },
+        {
+          "id": "add_devices",
+          "template": "add_devices"
+        }
+      ],
+      "id": "dtv+-valve-outlet"
+    },
+    {
+      "name": {
+        "en": "Invigoration Steamer"
+      },
+      "class": "heater",
+      "capabilities": [
+        "onoff",
+        "target_temperature"
+      ],
+      "capabilitiesOptions": {
+        "target_temperature": {
+          "min": 35,
+          "max": 48,
+          "step": 1
+        }
+      },
+      "platforms": [
+        "local"
+      ],
+      "connectivity": [
+        "lan"
+      ],
+      "images": {
+        "small": "/drivers/invigoration-steamer/assets/images/small.png",
+        "large": "/drivers/invigoration-steamer/assets/images/large.png",
+        "xlarge": "/drivers/invigoration-steamer/assets/images/xlarge.png"
+      },
+      "settings": [
+        {
+          "type": "group",
+          "label": {
+            "en": "Connection"
+          },
+          "children": [
+            {
+              "id": "address",
+              "type": "text",
+              "label": {
+                "en": "IP Address"
+              },
+              "hint": {
+                "en": "IP address of your Kohler DTV+ controller"
+              },
+              "value": ""
+            },
+            {
+              "id": "steamDuration",
+              "type": "number",
+              "label": {
+                "en": "Default Steam Duration (minutes)"
+              },
+              "hint": {
+                "en": "How long the steam generator runs when turned on"
+              },
+              "value": 10,
+              "min": 1,
+              "max": 60
+            }
+          ]
+        }
+      ],
+      "pair": [
+        {
+          "id": "address",
+          "navigation": {
+            "next": "list_devices"
+          }
+        },
+        {
+          "id": "list_devices",
+          "template": "list_devices",
+          "navigation": {
+            "next": "add_devices"
+          }
+        },
+        {
+          "id": "add_devices",
+          "template": "add_devices"
+        }
+      ],
+      "id": "invigoration-steamer"
+    }
+  ]
+}

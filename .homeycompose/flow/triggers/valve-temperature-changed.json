@@ -1,0 +1,23 @@
+{
+  "title": {
+    "en": "Water temperature changed"
+  },
+  "hint": {
+    "en": "Triggered when the actual water temperature changes"
+  },
+  "args": [
+    {
+      "type": "device",
+      "name": "device",
+      "filter": "driver_id=dtv+-six-port-valve"
+    }
+  ],
+  "tokens": [
+    {
+      "name": "temperature",
+      "type": "number",
+      "title": { "en": "Temperature" },
+      "example": 38.5
+    }
+  ]
+}
