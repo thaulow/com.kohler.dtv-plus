@@ -96,9 +96,7 @@ module.exports = class KohlerDtvDriver extends Homey.Driver {
         // Build outlet info and sub-capabilities
         const outlets = [];
         const caps = [];
-        const capOpts = {
-          target_temperature: { min: 30, max: 45, step: 0.5, uiComponent: 'slider' },
-        };
+        const capOpts = {};
 
         // Outlet buttons first so the button grid is the default page
         for (let i = 1; i <= vc.ports; i++) {
@@ -117,8 +115,8 @@ module.exports = class KohlerDtvDriver extends Homey.Driver {
         // Start/Stop button at the bottom of the grid (alone on last row)
         caps.push('shower_toggle');
 
-        // Temperature after buttons
-        caps.push('target_temperature', 'measure_temperature');
+        // Temperature after buttons (custom slider — avoids thermostat dial page)
+        caps.push('valve_setpoint', 'measure_temperature');
 
         // Error alarm
         caps.push('alarm_generic');
