@@ -56,128 +56,62 @@ module.exports = class KohlerDtvDriver extends Homey.Driver {
       const id = values.MAC || address;
       const devices = [];
 
-      // ── 1. Controller ─────────────────────────────────────────
-      devices.push({
-        name: 'DTV+ Controller',
-        data: { id: `${id}-controller` },
-        store: { deviceType: 'controller' },
-        settings: { address },
-        capabilities: ['onoff'],
-        capabilitiesOptions: {
-          onoff: { title: { en: 'Shower' } },
-        },
-        class: 'other',
-      });
-
-      // ── 2. Valves ─────────────────────────────────────────────
-      const valves = [];
+      // ── 1. Valves (shower zones) ────────────────────────────────
+      const valveConfigs = [];
       if (values.valve1_installed) {
-        valves.push({
+        valveConfigs.push({
           num: 1,
-          name: values.valve1_name || 'DTV+ Valve 1',
+          name: values.valve1_name || 'DTV+ Shower Zone 1',
           ports: parseInt(values.valve1PortsAvailable) || 6,
+          prefix: '',  // valve 1 keys: one_type, two_type, etc.
         });
       }
       if (values.valve2_installed) {
-        valves.push({
+        valveConfigs.push({
           num: 2,
-          name: values.valve2_name || 'DTV+ Valve 2',
+          name: values.valve2_name || 'DTV+ Shower Zone 2',
           ports: parseInt(values.valve2PortsAvailable) || 6,
+          prefix: 'v2_',  // valve 2 keys: v2_one_type, v2_two_type, etc.
         });
       }
-      if (!values.valve1_installed && !values.valve2_installed) {
-        valves.push({ num: 1, name: 'DTV+ Valve 1', ports: 6 });
+      if (valveConfigs.length === 0) {
+        valveConfigs.push({ num: 1, name: 'DTV+ Shower', ports: 6, prefix: '' });
       }
 
-      for (const v of valves) {
+      for (const vc of valveConfigs) {
+        // Build outlet info and sub-capabilities
+        const outlets = [];
+        const caps = ['onoff', 'target_temperature', 'measure_temperature'];
+        const capOpts = {
+          target_temperature: { min: 30, max: 45, step: 0.5 },
+        };
+
+        for (let i = 1; i <= vc.ports; i++) {
+          const typeKey = `${vc.prefix}${ORDINALS[i]}_type`;
+          const typeName = KohlerApi.outletTypeName(values[typeKey]);
+          const capId = `onoff.outlet_${i}`;
+          caps.push(capId);
+          capOpts[capId] = { title: { en: typeName } };
+          outlets.push({ number: i, typeName });
+        }
+
         devices.push({
-          name: v.name,
-          data: { id: `${id}-valve${v.num}` },
+          name: vc.name,
+          data: { id: `${id}-valve${vc.num}` },
           store: {
             deviceType: 'valve',
-            valveNumber: v.num,
-            portsAvailable: v.ports,
+            valveNumber: vc.num,
+            portsAvailable: vc.ports,
+            outlets,
           },
           settings: { address },
-          capabilities: ['onoff', 'target_temperature', 'measure_temperature'],
-          capabilitiesOptions: {
-            onoff: { title: { en: 'Valve' } },
-            target_temperature: { min: 30, max: 45, step: 0.5 },
-          },
+          capabilities: caps,
+          capabilitiesOptions: capOpts,
           class: 'thermostat',
         });
       }
 
-      // ── 3. Outlets ────────────────────────────────────────────
-      const outlets = [];
-      if (values.valve1_installed) {
-        const ports = parseInt(values.valve1PortsAvailable) || 0;
-        for (let i = 1; i <= ports; i++) {
-          const typeKey = `${ORDINALS[i]}_type`;
-          const massageKey = `${ORDINALS[i]}_massage`;
-          const typeName = KohlerApi.outletTypeName(values[typeKey]);
-          const typeNum = KohlerApi.outletTypeNumber(values[typeKey]);
-          const hasMassage = !!values[massageKey];
-          outlets.push({
-            name: `Zone 1 — ${typeName}`,
-            data: { id: `${id}-valve1-outlet${i}` },
-            store: {
-              deviceType: 'outlet',
-              valveNumber: 1,
-              outletNumber: i,
-              outletType: typeNum,
-              hasMassage,
-            },
-            settings: { address },
-            capabilities: ['onoff'],
-            capabilitiesOptions: {
-              onoff: { title: { en: 'Outlet' } },
-            },
-            class: 'other',
-          });
-        }
-      }
-      if (values.valve2_installed) {
-        const ports = parseInt(values.valve2PortsAvailable) || 0;
-        for (let i = 1; i <= ports; i++) {
-          const typeKey = `v2_${ORDINALS[i]}_type`;
-          const massageKey = `v2_${ORDINALS[i]}_massage`;
-          const typeName = KohlerApi.outletTypeName(values[typeKey]);
-          const typeNum = KohlerApi.outletTypeNumber(values[typeKey]);
-          const hasMassage = !!values[massageKey];
-          outlets.push({
-            name: `Zone 2 — ${typeName}`,
-            data: { id: `${id}-valve2-outlet${i}` },
-            store: {
-              deviceType: 'outlet',
-              valveNumber: 2,
-              outletNumber: i,
-              outletType: typeNum,
-              hasMassage,
-            },
-            settings: { address },
-            capabilities: ['onoff'],
-            capabilitiesOptions: {
-              onoff: { title: { en: 'Outlet' } },
-            },
-            class: 'other',
-          });
-        }
-      }
-
-      // Deduplicate outlet names
-      const nameCount = {};
-      for (const d of outlets) nameCount[d.name] = (nameCount[d.name] || 0) + 1;
-      const nameIndex = {};
-      for (const d of outlets) {
-        if (nameCount[d.name] > 1) {
-          nameIndex[d.name] = (nameIndex[d.name] || 0) + 1;
-          d.name = `${d.name} ${nameIndex[d.name]}`;
-        }
-      }
-      devices.push(...outlets);
-
-      // ── 4. Amplifier ──────────────────────────────────────────
+      // ── 2. Amplifier ──────────────────────────────────────────
       devices.push({
         name: 'DTV+ Amplifier',
         data: { id: `${id}-amplifier` },
@@ -187,7 +121,7 @@ module.exports = class KohlerDtvDriver extends Homey.Driver {
         class: 'speaker',
       });
 
-      // ── 5. Steamer (only if installed) ────────────────────────
+      // ── 3. Steamer (only if installed) ────────────────────────
       if (values.steam_installed) {
         devices.push({
           name: 'Invigoration Steamer',

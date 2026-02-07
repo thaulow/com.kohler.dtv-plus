@@ -13,9 +13,7 @@ module.exports = class KohlerDtvDevice extends Homey.Device {
 
     // Set device class based on type
     const CLASS_MAP = {
-      controller: 'other',
       valve: 'thermostat',
-      outlet: 'other',
       amplifier: 'speaker',
       steamer: 'heater',
     };
@@ -26,9 +24,7 @@ module.exports = class KohlerDtvDevice extends Homey.Device {
 
     // Route to type-specific init
     switch (this._deviceType) {
-      case 'controller': this._initController(); break;
       case 'valve':      this._initValve(); break;
-      case 'outlet':     this._initOutlet(); break;
       case 'amplifier':  this._initAmplifier(); break;
       case 'steamer':    this._initSteamer(); break;
       default:
@@ -40,35 +36,21 @@ module.exports = class KohlerDtvDevice extends Homey.Device {
   }
 
   // ══════════════════════════════════════════════════════════════════
-  // CONTROLLER
-  // ══════════════════════════════════════════════════════════════════
-
-  _initController() {
-    this.registerCapabilityListener('onoff', async (value) => {
-      if (value) {
-        await this.api.startPreset(1);
-      } else {
-        await this.api.stopShower();
-      }
-      this.homey.app.requestPoll(this._address);
-    });
-  }
-
-  async _onSystemInfoController(info) {
-    const isOn = info.ui_shower_on === true
-      || info.ui_shower_on === 'true'
-      || info.valve1_Currentstatus === 'On'
-      || info.valve2_Currentstatus === 'On';
-    await this.setCapabilityValue('onoff', isOn).catch(this.error);
-  }
-
-  // ══════════════════════════════════════════════════════════════════
   // VALVE
   // ══════════════════════════════════════════════════════════════════
 
   _initValve() {
     this.registerCapabilityListener('onoff', this._onValveOnOff.bind(this));
     this.registerCapabilityListener('target_temperature', this._onValveTargetTemp.bind(this));
+
+    // Register listeners for each outlet toggle (onoff.outlet_1, onoff.outlet_2, etc.)
+    const ports = this.getStoreValue('portsAvailable') || 6;
+    for (let i = 1; i <= ports; i++) {
+      const capId = `onoff.outlet_${i}`;
+      if (this.hasCapability(capId)) {
+        this.registerCapabilityListener(capId, this._onOutletToggle.bind(this, i));
+      }
+    }
 
     // Device trigger card: water temperature changed
     this._tempTrigger = this.homey.flow.getDeviceTriggerCard('valve-temperature-changed');
@@ -77,9 +59,9 @@ module.exports = class KohlerDtvDevice extends Homey.Device {
   async _onValveOnOff(value) {
     const valveNum = this.getStoreValue('valveNumber') || 1;
     if (value) {
+      // Open only the outlets that are toggled on
+      const outletStr = this._getEnabledOutletString();
       const temp = this._getValveTargetTempForApi();
-      const ports = this.getStoreValue('portsAvailable') || 6;
-      const outletStr = KohlerApi.buildOutletString(ports);
       await this._sendValveShowerCommand(valveNum, outletStr, temp);
     } else {
       const otherValve = valveNum === 1 ? 2 : 1;
@@ -92,13 +74,49 @@ module.exports = class KohlerDtvDevice extends Homey.Device {
     this.homey.app.requestPoll(this._address);
   }
 
+  /** Called when an individual outlet toggle changes while the shower may be running */
+  async _onOutletToggle(outletNumber, value) {
+    // If the valve isn't on, just store the toggle state (no command needed)
+    if (!this.getCapabilityValue('onoff')) return;
+
+    const valveNum = this.getStoreValue('valveNumber') || 1;
+    const outletStr = this._getEnabledOutletString();
+
+    // If all outlets just got turned off, stop the shower
+    if (outletStr === '0') {
+      const otherValve = valveNum === 1 ? 2 : 1;
+      if (this._isOtherValveRunning(otherValve)) {
+        await this._sendValveShowerCommand(valveNum, '0', 100);
+      } else {
+        await this.api.stopShower();
+      }
+    } else {
+      const temp = this._getValveTargetTempForApi();
+      await this._sendValveShowerCommand(valveNum, outletStr, temp);
+    }
+    this.homey.app.requestPoll(this._address);
+  }
+
+  /** Build outlet string from the onoff.outlet_N toggle states */
+  _getEnabledOutletString() {
+    const ports = this.getStoreValue('portsAvailable') || 6;
+    let str = '';
+    for (let i = 1; i <= ports; i++) {
+      const capId = `onoff.outlet_${i}`;
+      if (this.hasCapability(capId) && this.getCapabilityValue(capId)) {
+        str += String(i);
+      }
+    }
+    return str || '0';
+  }
+
   async _onValveTargetTemp(value) {
     if (!this.getCapabilityValue('onoff')) return;
     const valveNum = this.getStoreValue('valveNumber') || 1;
     const info = this._lastInfo || {};
     const apiTemp = KohlerApi.fromHomeyTemp(value, info);
-    const currentOutlets = this._getCurrentOutletString(valveNum);
-    await this._sendValveShowerCommand(valveNum, currentOutlets, apiTemp);
+    const outletStr = this._getEnabledOutletString();
+    await this._sendValveShowerCommand(valveNum, outletStr, apiTemp);
     this.homey.app.requestPoll(this._address);
   }
 
@@ -138,6 +156,7 @@ module.exports = class KohlerDtvDevice extends Homey.Device {
   async _onSystemInfoValve(info) {
     const v = this.getStoreValue('valveNumber') || 1;
 
+    // Update current water temperature
     const rawTemp = KohlerApi.toHomeyTemp(info[`valve${v}Temp`], info);
     if (rawTemp !== null) {
       const prev = this.getCapabilityValue('measure_temperature');
@@ -147,71 +166,25 @@ module.exports = class KohlerDtvDevice extends Homey.Device {
       }
     }
 
+    // Update target temperature setpoint
     const rawSetpoint = KohlerApi.toHomeyTemp(info[`valve${v}Setpoint`], info);
     if (rawSetpoint !== null) {
       await this.setCapabilityValue('target_temperature', rawSetpoint).catch(this.error);
     }
 
+    // Update master on/off from valve status
     const isOn = info[`valve${v}_Currentstatus`] === 'On';
     await this.setCapabilityValue('onoff', isOn).catch(this.error);
-  }
 
-  // ══════════════════════════════════════════════════════════════════
-  // OUTLET
-  // ══════════════════════════════════════════════════════════════════
-
-  _initOutlet() {
-    this.registerCapabilityListener('onoff', this._onOutletOnOff.bind(this));
-  }
-
-  async _onOutletOnOff(value) {
-    const valveNum = this.getStoreValue('valveNumber');
-    const outletNum = this.getStoreValue('outletNumber');
-    const info = this._lastInfo || {};
-
-    const valve1Outlets = this._buildOutletString(1,
-      valveNum === 1 ? outletNum : null,
-      valveNum === 1 ? value : null,
-    );
-    const valve2Outlets = this._buildOutletString(2,
-      valveNum === 2 ? outletNum : null,
-      valveNum === 2 ? value : null,
-    );
-
-    if (valve1Outlets === '0' && valve2Outlets === '0') {
-      await this.api.stopShower();
-      this.homey.app.requestPoll(this._address);
-      return;
+    // Update individual outlet toggle states from controller
+    const ports = this.getStoreValue('portsAvailable') || 6;
+    for (let i = 1; i <= ports; i++) {
+      const capId = `onoff.outlet_${i}`;
+      if (this.hasCapability(capId)) {
+        const isOpen = !!info[`valve${v}outlet${i}`];
+        await this.setCapabilityValue(capId, isOpen).catch(this.error);
+      }
     }
-
-    const valve1Temp = parseFloat(info.valve1Setpoint) || 100;
-    const valve2Temp = parseFloat(info.valve2Setpoint) || 100;
-
-    await this.api.startShower({
-      valve1Outlet: valve1Outlets,
-      valve1Temp: valve1Temp,
-      valve2Outlet: valve2Outlets,
-      valve2Temp: valve2Temp,
-    });
-    this.homey.app.requestPoll(this._address);
-  }
-
-  _buildOutletString(valve, toggle, state) {
-    const info = this._lastInfo || {};
-    let str = '';
-    for (let i = 1; i <= 6; i++) {
-      let isOpen = !!info[`valve${valve}outlet${i}`];
-      if (toggle === i) isOpen = state;
-      if (isOpen) str += String(i);
-    }
-    return str || '0';
-  }
-
-  async _onSystemInfoOutlet(info) {
-    const v = this.getStoreValue('valveNumber');
-    const o = this.getStoreValue('outletNumber');
-    const isOpen = !!info[`valve${v}outlet${o}`];
-    await this.setCapabilityValue('onoff', isOpen).catch(this.error);
   }
 
   // ══════════════════════════════════════════════════════════════════
@@ -295,9 +268,7 @@ module.exports = class KohlerDtvDevice extends Homey.Device {
   async onSystemInfo(info) {
     this._lastInfo = info;
     switch (this._deviceType) {
-      case 'controller': return this._onSystemInfoController(info);
       case 'valve':      return this._onSystemInfoValve(info);
-      case 'outlet':     return this._onSystemInfoOutlet(info);
       case 'amplifier':  return this._onSystemInfoAmplifier(info);
     }
   }
