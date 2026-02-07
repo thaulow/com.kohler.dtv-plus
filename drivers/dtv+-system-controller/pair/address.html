@@ -20,37 +20,35 @@
   <p class="error" id="error" style="display:none"></p>
 
   <script type="application/javascript">
-    function onHomeyReady(Homey) {
-      Homey.ready();
+    Homey.ready();
 
-      var btnConnect = document.getElementById('btn-connect');
-      var inputAddress = document.getElementById('address');
-      var errorEl = document.getElementById('error');
+    var btnConnect = document.getElementById('btn-connect');
+    var inputAddress = document.getElementById('address');
+    var errorEl = document.getElementById('error');
 
-      btnConnect.addEventListener('click', function () {
-        var address = inputAddress.value.trim();
-        if (!address) return;
+    btnConnect.addEventListener('click', function () {
+      var address = inputAddress.value.trim();
+      if (!address) return;
 
-        errorEl.style.display = 'none';
-        btnConnect.disabled = true;
-        btnConnect.textContent = 'Connecting\u2026';
+      errorEl.style.display = 'none';
+      btnConnect.disabled = true;
+      btnConnect.textContent = 'Connecting\u2026';
 
-        Homey.emit('address', address, function (err) {
+      Homey.emit('address', address)
+        .then(function () {
+          Homey.showView('list_devices');
+        })
+        .catch(function (err) {
           btnConnect.disabled = false;
           btnConnect.textContent = 'Connect';
-          if (err) {
-            errorEl.textContent = err.message || 'Could not connect to the DTV+ controller';
-            errorEl.style.display = 'block';
-          } else {
-            Homey.showView('list_devices');
-          }
+          errorEl.textContent = err.message || 'Could not connect to the DTV+ controller';
+          errorEl.style.display = 'block';
         });
-      });
+    });
 
-      inputAddress.addEventListener('keypress', function (e) {
-        if (e.key === 'Enter') btnConnect.click();
-      });
-    }
+    inputAddress.addEventListener('keypress', function (e) {
+      if (e.key === 'Enter') btnConnect.click();
+    });
   </script>
 </body>
 </html>
