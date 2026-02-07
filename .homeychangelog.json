@@ -58,5 +58,8 @@
   },
   "1.0.19": {
     "en": "added icons, rearraned panels"
+  },
+  "1.0.20": {
+    "en": "changed icons and slider for heat"
   }
 }
