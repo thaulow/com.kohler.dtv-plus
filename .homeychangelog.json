@@ -16,5 +16,11 @@
   },
   "1.0.5": {
     "en": "Fixed app icon using black fill for proper Homey mask rendering"
+  },
+  "1.0.6": {
+    "en": "Changed from per device connection to grouped connection"
+  },
+  "1.0.7": {
+    "en": "Changed from per device connection to grouped connection"
   }
 }
