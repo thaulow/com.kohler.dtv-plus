@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <path d="M10 22 L20 22 L34 10 L34 54 L20 42 L10 42 Z" fill="black"/>
-  <path d="M40 16 C47 21 50 26 50 32 C50 38 47 43 40 48 L43 52 C52 46 56 40 56 32 C56 24 52 18 43 12 Z" fill="black" opacity="0.5"/>
-  <path d="M40 24 C44 27 45 29 45 32 C45 35 44 37 40 40 L42 44 C48 40 50 36 50 32 C50 28 48 24 42 20 Z" fill="black" opacity="0.7"/>
+  <!-- Speaker cone (filled outline via evenodd) -->
+  <path d="M8 22 L18 22 L34 10 L34 54 L18 42 L8 42 Z M12 26 L20 26 L30 18 L30 46 L20 38 L12 38 Z" fill="black" fill-rule="evenodd"/>
+  <!-- Sound wave 1 (inner) -->
+  <path d="M40 23 C43 26 45 29 45 32 C45 35 43 38 40 41 L43 44 C47 40 50 37 50 32 C50 27 47 24 43 20 Z" fill="black"/>
+  <!-- Sound wave 2 (outer) -->
+  <path d="M46 15 C52 21 56 26 56 32 C56 38 52 43 46 49 L49 52 C56 45 60 39 60 32 C60 25 56 19 49 12 Z" fill="black"/>
 </svg>

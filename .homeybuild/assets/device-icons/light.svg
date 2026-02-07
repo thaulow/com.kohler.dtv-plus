@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <path d="M32 4 C20 4 12 12 12 24 C12 32 18 38 22 42 L22 48 L42 48 L42 42 C46 38 52 32 52 24 C52 12 44 4 32 4 Z" fill="black"/>
-  <rect x="24" y="50" width="16" height="3" rx="1.5" fill="black"/>
-  <rect x="26" y="55" width="12" height="3" rx="1.5" fill="black"/>
-  <circle cx="32" cy="24" r="6" fill="white" opacity="0.8"/>
+  <!-- Bulb (outline via evenodd) -->
+  <path d="M32 4 C20 4 12 13 12 24 C12 32 17 37 22 42 L22 48 L42 48 L42 42 C47 37 52 32 52 24 C52 13 44 4 32 4 Z M32 8 C42 8 48 15 48 24 C48 30 44 35 39 39 L38 40 L38 44 L26 44 L26 40 L25 39 C20 35 16 30 16 24 C16 15 22 8 32 8 Z" fill="black" fill-rule="evenodd"/>
+  <!-- Base ring 1 -->
+  <rect x="22" y="50" width="20" height="3" rx="1.5" fill="black"/>
+  <!-- Base ring 2 -->
+  <rect x="24" y="55" width="16" height="3" rx="1.5" fill="black"/>
 </svg>
