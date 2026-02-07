@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
-
-  <path d="M20 12 Q20 8 24 8 Q28 8 28 12 L28 18 Q28 22 24 22 Q20 22 20 18 Z" fill="currentColor" opacity="0.8"/>
-  <path d="M36 20 Q36 16 40 16 Q44 16 44 20 L44 26 Q44 30 40 30 Q36 30 36 26 Z" fill="currentColor" opacity="0.6"/>
-  <path d="M14 30 Q14 26 18 26 Q22 26 22 30 L22 36 Q22 40 18 40 Q14 40 14 36 Z" fill="currentColor" opacity="0.7"/>
-  <path d="M30 36 Q30 32 34 32 Q38 32 38 36 L38 42 Q38 46 34 46 Q30 46 30 42 Z" fill="currentColor" opacity="0.5"/>
-  <path d="M44 40 Q44 36 48 36 Q52 36 52 40 L52 46 Q52 50 48 50 Q44 50 44 46 Z" fill="currentColor" opacity="0.6"/>
-
+  <path d="M24 14 C24 10 20 10 20 14 C20 17 24 17 24 14 Z" fill="black"/>
+  <path d="M44 22 C44 18 40 18 40 22 C40 25 44 25 44 22 Z" fill="black"/>
+  <path d="M18 32 C18 28 14 28 14 32 C14 35 18 35 18 32 Z" fill="black"/>
+  <path d="M38 36 C38 32 34 32 34 36 C34 39 38 39 38 36 Z" fill="black"/>
+  <path d="M52 42 C52 38 48 38 48 42 C48 45 52 45 52 42 Z" fill="black"/>
+  <path d="M28 46 C28 42 24 42 24 46 C24 49 28 49 28 46 Z" fill="black"/>
+  <path d="M14 50 C14 46 10 46 10 50 C10 53 14 53 14 50 Z" fill="black"/>
 </svg>

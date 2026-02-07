@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
-
-  <path d="M12 10 L12 18 L30 18 L30 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-  <ellipse cx="30" cy="28" rx="10" ry="5" fill="none" stroke="currentColor" stroke-width="2.5"/>
-  <line x1="24" y1="37" x2="22" y2="46" stroke="currentColor" stroke-width="2" stroke-linecap="round" opacity="0.7"/>
-  <line x1="30" y1="34" x2="30" y2="48" stroke="currentColor" stroke-width="2" stroke-linecap="round" opacity="0.7"/>
-  <line x1="36" y1="37" x2="38" y2="46" stroke="currentColor" stroke-width="2" stroke-linecap="round" opacity="0.7"/>
-
+  <rect x="10" y="8" width="4" height="14" fill="black"/>
+  <rect x="10" y="18" width="22" height="4" fill="black"/>
+  <ellipse cx="30" cy="27" rx="11" ry="5" fill="black"/>
+  <rect x="22" y="36" width="2.5" height="8" rx="1.25" fill="black" opacity="0.7"/>
+  <rect x="29" y="34" width="2.5" height="10" rx="1.25" fill="black" opacity="0.7"/>
+  <rect x="36" y="36" width="2.5" height="8" rx="1.25" fill="black" opacity="0.7"/>
 </svg>

@@ -1,9 +1,0 @@
-{
-  "type": "boolean",
-  "title": { "en": "Outlet" },
-  "getable": true,
-  "setable": true,
-  "uiComponent": "toggle",
-  "uiQuickAction": false,
-  "insights": false
-}

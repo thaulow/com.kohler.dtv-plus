@@ -1,0 +1,12 @@
+{
+  "type": "boolean",
+  "title": {
+    "en": "Outlet 1"
+  },
+  "getable": true,
+  "setable": true,
+  "uiComponent": "button",
+  "uiQuickAction": false,
+  "insights": false,
+  "icon": "/assets/outlets/1.svg"
+}

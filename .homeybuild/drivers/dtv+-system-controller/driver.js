@@ -100,18 +100,17 @@ module.exports = class KohlerDtvDriver extends Homey.Driver {
           target_temperature: { min: 30, max: 45, step: 0.5 },
         };
 
-        // Outlet buttons first so the button grid is the default page
+        // Outlet toggles first (separate capabilities so each gets its own row)
         for (let i = 1; i <= vc.ports; i++) {
           const typeKey = `${vc.prefix}${ORDINALS[i]}_type`;
           const typeName = KohlerApi.outletTypeName(values[typeKey]);
           const typeNum = KohlerApi.outletTypeNumber(values[typeKey]);
-          const capId = `outlet_toggle.${i}`;
+          const capId = `outlet_${i}`;
           caps.push(capId);
           capOpts[capId] = {
             title: { en: typeName },
-            icon: `/assets/outlets/${typeNum}.svg`,
           };
-          outlets.push({ number: i, typeName });
+          outlets.push({ number: i, typeName, typeNum });
         }
 
         // Start/Stop button at the bottom of the grid (alone on last row)

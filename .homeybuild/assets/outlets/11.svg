@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
-
-  <rect x="10" y="14" width="44" height="8" rx="3" fill="none" stroke="currentColor" stroke-width="2.5"/>
-  <line x1="18" y1="26" x2="16" y2="36" stroke="currentColor" stroke-width="2" stroke-linecap="round" opacity="0.7"/>
-  <line x1="26" y1="26" x2="26" y2="38" stroke="currentColor" stroke-width="2" stroke-linecap="round" opacity="0.7"/>
-  <line x1="34" y1="26" x2="34" y2="36" stroke="currentColor" stroke-width="2" stroke-linecap="round" opacity="0.7"/>
-  <line x1="42" y1="26" x2="44" y2="38" stroke="currentColor" stroke-width="2" stroke-linecap="round" opacity="0.7"/>
-  <line x1="22" y1="26" x2="21" y2="44" stroke="currentColor" stroke-width="2" stroke-linecap="round" opacity="0.5"/>
-  <line x1="38" y1="26" x2="39" y2="44" stroke="currentColor" stroke-width="2" stroke-linecap="round" opacity="0.5"/>
-
+  <rect x="8" y="10" width="48" height="10" rx="3" fill="black"/>
+  <rect x="16" y="26" width="2.5" height="8" rx="1.25" fill="black" opacity="0.7"/>
+  <rect x="25" y="24" width="2.5" height="10" rx="1.25" fill="black" opacity="0.7"/>
+  <rect x="34" y="26" width="2.5" height="8" rx="1.25" fill="black" opacity="0.7"/>
+  <rect x="43" y="24" width="2.5" height="10" rx="1.25" fill="black" opacity="0.7"/>
+  <rect x="20" y="38" width="2.5" height="8" rx="1.25" fill="black" opacity="0.5"/>
+  <rect x="38" y="38" width="2.5" height="8" rx="1.25" fill="black" opacity="0.5"/>
 </svg>

@@ -51,12 +51,21 @@ module.exports = class KohlerDtvDevice extends Homey.Device {
     this.registerCapabilityListener('shower_toggle', this._onValveOnOff.bind(this));
     this.registerCapabilityListener('target_temperature', this._onValveTargetTemp.bind(this));
 
-    // Register listeners for each outlet toggle (outlet_toggle.1, outlet_toggle.2, etc.)
+    // Register listeners for each outlet toggle and set per-type icons
     const ports = this.getStoreValue('portsAvailable') || 6;
+    const outlets = this.getStoreValue('outlets') || [];
     for (let i = 1; i <= ports; i++) {
-      const capId = `outlet_toggle.${i}`;
+      const capId = `outlet_${i}`;
       if (this.hasCapability(capId)) {
         this.registerCapabilityListener(capId, this._onOutletToggle.bind(this, i));
+
+        // Set outlet title from stored type name
+        const outlet = outlets.find((o) => o.number === i);
+        if (outlet) {
+          this.setCapabilityOptions(capId, {
+            title: { en: outlet.typeName },
+          }).catch(this.error);
+        }
       }
     }
 
@@ -106,12 +115,12 @@ module.exports = class KohlerDtvDevice extends Homey.Device {
     this.homey.app.requestPoll(this._address);
   }
 
-  /** Build outlet string from the outlet_toggle.N toggle states */
+  /** Build outlet string from the outlet_N toggle states */
   _getEnabledOutletString() {
     const ports = this.getStoreValue('portsAvailable') || 6;
     let str = '';
     for (let i = 1; i <= ports; i++) {
-      const capId = `outlet_toggle.${i}`;
+      const capId = `outlet_${i}`;
       if (this.hasCapability(capId) && this.getCapabilityValue(capId)) {
         str += String(i);
       }
@@ -191,7 +200,7 @@ module.exports = class KohlerDtvDevice extends Homey.Device {
     // Update individual outlet toggle states from controller
     const ports = this.getStoreValue('portsAvailable') || 6;
     for (let i = 1; i <= ports; i++) {
-      const capId = `outlet_toggle.${i}`;
+      const capId = `outlet_${i}`;
       if (this.hasCapability(capId)) {
         const isOpen = !!info[`valve${v}outlet${i}`];
         await this.setCapabilityValue(capId, isOpen).catch(this.error);

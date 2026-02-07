@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
-
-  <rect x="12" y="12" width="40" height="40" rx="4" fill="none" stroke="currentColor" stroke-width="2.5"/>
-  <circle cx="24" cy="24" r="2.5" fill="currentColor"/>
-  <circle cx="40" cy="24" r="2.5" fill="currentColor"/>
-  <circle cx="24" cy="40" r="2.5" fill="currentColor"/>
-  <circle cx="40" cy="40" r="2.5" fill="currentColor"/>
-  <circle cx="32" cy="32" r="2.5" fill="currentColor"/>
-
+  <rect x="10" y="10" width="44" height="44" rx="4" fill="black"/>
+  <circle cx="22" cy="22" r="3" fill="white"/>
+  <circle cx="42" cy="22" r="3" fill="white"/>
+  <circle cx="22" cy="42" r="3" fill="white"/>
+  <circle cx="42" cy="42" r="3" fill="white"/>
+  <circle cx="32" cy="32" r="3" fill="white"/>
 </svg>

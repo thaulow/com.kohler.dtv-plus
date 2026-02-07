@@ -235,7 +235,7 @@
       "uiComponent": "button",
       "uiQuickAction": false,
       "insights": false,
-      "icon": "/assets/outlets/0.svg"
+      "icon": "/assets/outlets/1.svg"
     },
     "outlet_2": {
       "type": "boolean",
@@ -247,7 +247,7 @@
       "uiComponent": "button",
       "uiQuickAction": false,
       "insights": false,
-      "icon": "/assets/outlets/0.svg"
+      "icon": "/assets/outlets/1.svg"
     },
     "outlet_3": {
       "type": "boolean",
@@ -259,7 +259,7 @@
       "uiComponent": "button",
       "uiQuickAction": false,
       "insights": false,
-      "icon": "/assets/outlets/0.svg"
+      "icon": "/assets/outlets/1.svg"
     },
     "outlet_4": {
       "type": "boolean",
@@ -271,7 +271,7 @@
       "uiComponent": "button",
       "uiQuickAction": false,
       "insights": false,
-      "icon": "/assets/outlets/0.svg"
+      "icon": "/assets/outlets/1.svg"
     },
     "outlet_5": {
       "type": "boolean",
@@ -283,7 +283,7 @@
       "uiComponent": "button",
       "uiQuickAction": false,
       "insights": false,
-      "icon": "/assets/outlets/0.svg"
+      "icon": "/assets/outlets/1.svg"
     },
     "outlet_6": {
       "type": "boolean",
@@ -295,7 +295,7 @@
       "uiComponent": "button",
       "uiQuickAction": false,
       "insights": false,
-      "icon": "/assets/outlets/0.svg"
+      "icon": "/assets/outlets/1.svg"
     },
     "shower_toggle": {
       "type": "boolean",
