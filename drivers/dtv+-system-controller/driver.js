@@ -12,11 +12,15 @@ module.exports = class KohlerDtvDriver extends Homey.Driver {
 
     // ── Global flow cards (registered once in the driver) ──────────
 
-    this.homey.flow.getActionCard('start-preset')
-      .registerRunListener(async (args) => {
-        await args.device.api.startPreset(args.preset);
-        args.device.homey.app.requestPoll(args.device._address);
-      });
+    const presetCard = this.homey.flow.getActionCard('start-preset');
+    presetCard.registerRunListener(async (args) => {
+      await args.device.api.startPreset(args.preset.id);
+      args.device.homey.app.requestPoll(args.device._address);
+    });
+    presetCard.registerArgumentAutocompleteListener('preset', async (query, args) => {
+      const presets = args.device.getStoreValue('userPresets') || [];
+      return presets.filter((p) => p.name.toLowerCase().includes(query.toLowerCase()));
+    });
 
     this.homey.flow.getActionCard('stop-shower')
       .registerRunListener(async (args) => {
@@ -53,8 +57,18 @@ module.exports = class KohlerDtvDriver extends Homey.Driver {
     session.setHandler('list_devices', async () => {
       const api = new KohlerApi({ address });
       const values = await api.getValues();
+      const info = await api.getSystemInfo();
       const id = values.MAC || address;
       const devices = [];
+
+      // Build user presets list from values.cgi
+      const userPresets = [];
+      for (let i = 1; i <= 6; i++) {
+        const name = values[`user_${i}`] || values[`user${i}_string`];
+        if (name) {
+          userPresets.push({ id: i, name });
+        }
+      }
 
       // ── 1. Valves (shower zones) ────────────────────────────────
       const valveConfigs = [];
@@ -102,6 +116,9 @@ module.exports = class KohlerDtvDriver extends Homey.Driver {
         // Temperature after buttons
         caps.push('target_temperature', 'measure_temperature');
 
+        // Error alarm
+        caps.push('alarm_generic');
+
         devices.push({
           name: vc.name,
           data: { id: `${id}-valve${vc.num}` },
@@ -110,6 +127,8 @@ module.exports = class KohlerDtvDriver extends Homey.Driver {
             valveNumber: vc.num,
             portsAvailable: vc.ports,
             outlets,
+            defaultSetpoint: KohlerApi.toHomeyTemp(info[`valve${vc.num}Setpoint`], info),
+            userPresets,
           },
           settings: { address },
           capabilities: caps,
@@ -122,7 +141,7 @@ module.exports = class KohlerDtvDriver extends Homey.Driver {
       devices.push({
         name: 'DTV+ Amplifier',
         data: { id: `${id}-amplifier` },
-        store: { deviceType: 'amplifier' },
+        store: { deviceType: 'amplifier', userPresets },
         settings: { address },
         capabilities: ['onoff', 'volume_set'],
         class: 'speaker',
@@ -130,17 +149,37 @@ module.exports = class KohlerDtvDriver extends Homey.Driver {
 
       // ── 3. Steamer (only if installed) ────────────────────────
       if (values.steam_installed) {
+        const defaultSteamTemp = parseFloat(values.steam_default_string_temp);
         devices.push({
           name: 'Invigoration Steamer',
           data: { id: `${id}-steamer` },
-          store: { deviceType: 'steamer' },
+          store: {
+            deviceType: 'steamer',
+            defaultSteamTemp: isNaN(defaultSteamTemp) ? 43 : defaultSteamTemp,
+            userPresets,
+          },
           settings: { address },
-          capabilities: ['onoff', 'target_temperature'],
+          capabilities: ['onoff', 'target_temperature', 'measure_temperature', 'steam_time'],
           capabilitiesOptions: {
             target_temperature: { min: 35, max: 48, step: 1 },
           },
           class: 'heater',
         });
+      }
+
+      // ── 4. Light zones (if lighting module connected) ────────
+      if (values.lighting_con_string === 'conn') {
+        for (let z = 1; z <= 3; z++) {
+          const name = values[`light${z}_name`] || `Light Zone ${z}`;
+          devices.push({
+            name,
+            data: { id: `${id}-light${z}` },
+            store: { deviceType: 'light', lightZone: z },
+            settings: { address },
+            capabilities: ['onoff', 'dim'],
+            class: 'light',
+          });
+        }
       }
 
       return devices;

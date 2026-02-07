@@ -16,6 +16,7 @@ module.exports = class KohlerDtvDevice extends Homey.Device {
       valve: 'other',
       amplifier: 'speaker',
       steamer: 'heater',
+      light: 'light',
     };
     const targetClass = CLASS_MAP[this._deviceType] || 'other';
     if (this.getClass() !== targetClass) {
@@ -27,6 +28,7 @@ module.exports = class KohlerDtvDevice extends Homey.Device {
       case 'valve':      this._initValve(); break;
       case 'amplifier':  this._initAmplifier(); break;
       case 'steamer':    this._initSteamer(); break;
+      case 'light':      this._initLight(); break;
       default:
         this.error('Unknown deviceType:', this._deviceType);
     }
@@ -40,6 +42,12 @@ module.exports = class KohlerDtvDevice extends Homey.Device {
   // ══════════════════════════════════════════════════════════════════
 
   _initValve() {
+    // Set initial temperature from the controller's default setpoint
+    const defaultSetpoint = this.getStoreValue('defaultSetpoint');
+    if (defaultSetpoint != null && this.getCapabilityValue('target_temperature') == null) {
+      this.setCapabilityValue('target_temperature', defaultSetpoint).catch(this.error);
+    }
+
     this.registerCapabilityListener('shower_toggle', this._onValveOnOff.bind(this));
     this.registerCapabilityListener('target_temperature', this._onValveTargetTemp.bind(this));
 
@@ -82,7 +90,7 @@ module.exports = class KohlerDtvDevice extends Homey.Device {
     const valveNum = this.getStoreValue('valveNumber') || 1;
     const outletStr = this._getEnabledOutletString();
 
-    // If all outlets just got turned off, stop the shower
+    // If all outlets just got turned off, stop this valve
     if (outletStr === '0') {
       const otherValve = valveNum === 1 ? 2 : 1;
       if (this._isOtherValveRunning(otherValve)) {
@@ -90,6 +98,7 @@ module.exports = class KohlerDtvDevice extends Homey.Device {
       } else {
         await this.api.stopShower();
       }
+      await this.setCapabilityValue('shower_toggle', false).catch(this.error);
     } else {
       const temp = this._getValveTargetTempForApi();
       await this._sendValveShowerCommand(valveNum, outletStr, temp);
@@ -135,6 +144,9 @@ module.exports = class KohlerDtvDevice extends Homey.Device {
 
   _getCurrentOutletString(valve) {
     const info = this._lastInfo || {};
+    // Only include outlets if the valve is actually running —
+    // system_info always reports hardware assignments even when off
+    if (info[`valve${valve}_Currentstatus`] !== 'On') return '0';
     let str = '';
     for (let i = 1; i <= 6; i++) {
       if (info[`valve${valve}outlet${i}`]) str += String(i);
@@ -187,6 +199,16 @@ module.exports = class KohlerDtvDevice extends Homey.Device {
     }
   }
 
+  async _onValuesValve(values) {
+    const v = this.getStoreValue('valveNumber') || 1;
+    // Error alarm from fatal or resettable errors
+    if (this.hasCapability('alarm_generic')) {
+      const hasError = (values[`valve${v}_ErrorFatal`] || 0) > 0
+        || (values[`valve${v}_ErrorResettable`] || 0) > 0;
+      await this.setCapabilityValue('alarm_generic', hasError).catch(this.error);
+    }
+  }
+
   // ══════════════════════════════════════════════════════════════════
   // AMPLIFIER
   // ══════════════════════════════════════════════════════════════════
@@ -213,6 +235,11 @@ module.exports = class KohlerDtvDevice extends Homey.Device {
   }
 
   async _onSystemInfoAmplifier(info) {
+    // Update on/off from music status
+    const isOn = info.musicStatus === 'On';
+    await this.setCapabilityValue('onoff', isOn).catch(this.error);
+
+    // Update volume
     const volStr = info.volStatus;
     if (typeof volStr === 'string') {
       const pct = parseInt(volStr, 10);
@@ -227,6 +254,12 @@ module.exports = class KohlerDtvDevice extends Homey.Device {
   // ══════════════════════════════════════════════════════════════════
 
   _initSteamer() {
+    // Set initial temperature from the controller's default
+    const defaultSteamTemp = this.getStoreValue('defaultSteamTemp');
+    if (defaultSteamTemp != null && this.getCapabilityValue('target_temperature') == null) {
+      this.setCapabilityValue('target_temperature', defaultSteamTemp).catch(this.error);
+    }
+
     this.registerCapabilityListener('onoff', async (value) => {
       if (value) {
         const temp = this._getSteamerTargetTempForApi();
@@ -253,12 +286,63 @@ module.exports = class KohlerDtvDevice extends Homey.Device {
     return KohlerApi.fromHomeyTemp(homeyTemp, info);
   }
 
+  async _onSystemInfoSteamer(info) {
+    // Update on/off from steam status (more real-time than values.cgi)
+    const isOn = info.steamStatus === 'On';
+    await this.setCapabilityValue('onoff', isOn).catch(this.error);
+
+    // Update current steam temperature
+    const steamTemp = parseFloat(info.steamTempStatus);
+    if (!isNaN(steamTemp) && this.hasCapability('measure_temperature')) {
+      await this.setCapabilityValue('measure_temperature', steamTemp).catch(this.error);
+    }
+
+    // Update steam time remaining
+    if (this.hasCapability('steam_time')) {
+      const timeStr = isOn ? `${info.steamTimeStatus || '—'} min` : '—';
+      await this.setCapabilityValue('steam_time', timeStr).catch(this.error);
+    }
+  }
+
   async _onValuesSteamer(values) {
     const steamOn = values.steam_running === true
       || values.steam_running === 'true'
       || values.steam_running === 1
       || values.steam_running === '1';
     await this.setCapabilityValue('onoff', steamOn).catch(this.error);
+  }
+
+  // ══════════════════════════════════════════════════════════════════
+  // LIGHT ZONES
+  // ══════════════════════════════════════════════════════════════════
+
+  _initLight() {
+    this.registerCapabilityListener('onoff', async (value) => {
+      const zone = this.getStoreValue('lightZone') || 1;
+      if (value) {
+        const level = Math.round((this.getCapabilityValue('dim') || 1) * 100);
+        await this.api.lightOn(zone, level);
+      } else {
+        await this.api.lightOff(zone);
+      }
+      this.homey.app.requestPoll(this._address);
+    });
+
+    this.registerCapabilityListener('dim', async (value) => {
+      const zone = this.getStoreValue('lightZone') || 1;
+      const level = Math.round(value * 100);
+      await this.api.lightOn(zone, level);
+      if (!this.getCapabilityValue('onoff')) {
+        await this.setCapabilityValue('onoff', true).catch(this.error);
+      }
+      this.homey.app.requestPoll(this._address);
+    });
+  }
+
+  async _onSystemInfoLight(info) {
+    const zone = this.getStoreValue('lightZone') || 1;
+    const isOn = info[`LZ${zone}Status`] === 'On';
+    await this.setCapabilityValue('onoff', isOn).catch(this.error);
   }
 
   // ══════════════════════════════════════════════════════════════════
@@ -270,12 +354,15 @@ module.exports = class KohlerDtvDevice extends Homey.Device {
     switch (this._deviceType) {
       case 'valve':      return this._onSystemInfoValve(info);
       case 'amplifier':  return this._onSystemInfoAmplifier(info);
+      case 'steamer':    return this._onSystemInfoSteamer(info);
+      case 'light':      return this._onSystemInfoLight(info);
     }
   }
 
   async onValues(values) {
-    if (this._deviceType === 'steamer') {
-      return this._onValuesSteamer(values);
+    switch (this._deviceType) {
+      case 'steamer': return this._onValuesSteamer(values);
+      case 'valve':   return this._onValuesValve(values);
     }
   }
 

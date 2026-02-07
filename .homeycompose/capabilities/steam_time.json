@@ -1,0 +1,10 @@
+{
+  "type": "string",
+  "title": { "en": "Steam time remaining" },
+  "getable": true,
+  "setable": false,
+  "uiComponent": "sensor",
+  "uiQuickAction": false,
+  "icon": "/assets/icon.svg",
+  "insights": false
+}

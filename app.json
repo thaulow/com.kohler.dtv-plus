@@ -94,16 +94,13 @@
             "filter": "driver_id=dtv+-system-controller"
           },
           {
-            "type": "number",
+            "type": "autocomplete",
             "name": "preset",
             "title": {
-              "en": "Preset number"
+              "en": "Preset"
             },
-            "min": 1,
-            "max": 12,
-            "step": 1,
             "placeholder": {
-              "en": "1"
+              "en": "Select a preset…"
             }
           }
         ],
@@ -250,6 +247,18 @@
       "uiQuickAction": true,
       "insights": false,
       "icon": "/assets/icon.svg"
+    },
+    "steam_time": {
+      "type": "string",
+      "title": {
+        "en": "Steam time remaining"
+      },
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor",
+      "uiQuickAction": false,
+      "icon": "/assets/icon.svg",
+      "insights": false
     }
   }
 }
