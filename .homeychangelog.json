@@ -64,5 +64,8 @@
   },
   "1.0.21": {
     "en": "changed setpoints"
+  },
+  "1.0.22": {
+    "en": "revert to thermostat, toogle to button"
   }
 }
