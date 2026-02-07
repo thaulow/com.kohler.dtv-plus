@@ -91,5 +91,8 @@
   },
   "1.0.30": {
     "en": "added fill to svg icons"
+  },
+  "1.0.31": {
+    "en": "added fill to svg"
   }
 }
