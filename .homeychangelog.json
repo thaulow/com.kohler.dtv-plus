@@ -34,5 +34,8 @@
   },
   "1.0.11": {
     "en": "changed pairing"
+  },
+  "1.0.12": {
+    "en": "changed from http to net"
   }
 }
