@@ -10,8 +10,9 @@
     "en": "KOHLER DTV+"
   },
   "description": {
-    "en": "Control your Kohler DTV+ from Homey"
+    "en": "The perfect shower, every time"
   },
+  "brandColor": "#000000",
   "category": [
     "appliances"
   ],
@@ -21,6 +22,7 @@
     "large": "/assets/images/large.png",
     "xlarge": "/assets/images/xlarge.png"
   },
+  "support": "https://github.com/thaulow/com.kohler.dtv-plus/issues",
   "author": {
     "name": "Thomas Thaulow",
     "email": "thaulow@thaulow.co"
