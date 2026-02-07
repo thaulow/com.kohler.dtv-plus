@@ -49,5 +49,8 @@
   },
   "1.0.16": {
     "en": "changed capabilities to a unified interface"
+  },
+  "1.0.17": {
+    "en": "Added on/off to tiles"
   }
 }
