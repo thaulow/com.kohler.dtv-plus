@@ -81,12 +81,12 @@ module.exports = class KohlerDtvDriver extends Homey.Driver {
       for (const vc of valveConfigs) {
         // Build outlet info and sub-capabilities
         const outlets = [];
-        const caps = ['onoff', 'target_temperature', 'measure_temperature'];
+        const caps = [];
         const capOpts = {
-          onoff: { uiQuickAction: true },
           target_temperature: { min: 30, max: 45, step: 0.5 },
         };
 
+        // Outlet buttons first so the button grid is the default page
         for (let i = 1; i <= vc.ports; i++) {
           const typeKey = `${vc.prefix}${ORDINALS[i]}_type`;
           const typeName = KohlerApi.outletTypeName(values[typeKey]);
@@ -95,6 +95,12 @@ module.exports = class KohlerDtvDriver extends Homey.Driver {
           capOpts[capId] = { title: { en: typeName } };
           outlets.push({ number: i, typeName });
         }
+
+        // Start/Stop button at the bottom of the grid (alone on last row)
+        caps.push('shower_toggle');
+
+        // Temperature after buttons
+        caps.push('target_temperature', 'measure_temperature');
 
         devices.push({
           name: vc.name,

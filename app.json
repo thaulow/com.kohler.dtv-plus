@@ -238,6 +238,18 @@
       "uiComponent": "button",
       "uiQuickAction": false,
       "insights": false
+    },
+    "shower_toggle": {
+      "type": "boolean",
+      "title": {
+        "en": "Start / Stop"
+      },
+      "getable": true,
+      "setable": true,
+      "uiComponent": "button",
+      "uiQuickAction": true,
+      "insights": false,
+      "icon": "/assets/icon.svg"
     }
   }
 }
