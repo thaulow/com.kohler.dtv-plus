@@ -52,5 +52,8 @@
   },
   "1.0.17": {
     "en": "Added on/off to tiles"
+  },
+  "1.0.18": {
+    "en": "changed parameters"
   }
 }
