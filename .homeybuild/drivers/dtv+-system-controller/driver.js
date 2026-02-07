@@ -104,9 +104,13 @@ module.exports = class KohlerDtvDriver extends Homey.Driver {
         for (let i = 1; i <= vc.ports; i++) {
           const typeKey = `${vc.prefix}${ORDINALS[i]}_type`;
           const typeName = KohlerApi.outletTypeName(values[typeKey]);
+          const typeNum = KohlerApi.outletTypeNumber(values[typeKey]);
           const capId = `outlet_toggle.${i}`;
           caps.push(capId);
-          capOpts[capId] = { title: { en: typeName } };
+          capOpts[capId] = {
+            title: { en: typeName },
+            icon: `/assets/outlets/${typeNum}.svg`,
+          };
           outlets.push({ number: i, typeName });
         }
 
