@@ -88,5 +88,8 @@
   },
   "1.0.29": {
     "en": "added device icons"
+  },
+  "1.0.30": {
+    "en": "added fill to svg icons"
   }
 }
