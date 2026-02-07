@@ -1,6 +1,6 @@
 'use strict';
 
-const http = require('http');
+const net = require('net');
 
 const TIMEOUT_INFO = 5000;
 const TIMEOUT_COMMAND = 10000;
@@ -12,8 +12,10 @@ class KohlerApi {
   }
 
   /**
-   * Raw HTTP GET request. Uses insecureHTTPParser to handle the DTV+
-   * controller's occasionally malformed HTTP responses.
+   * Raw TCP GET request. The DTV+ controller sends HTTP responses so
+   * malformed that Node's http parser rejects them even with
+   * insecureHTTPParser. We use a raw TCP socket and extract the body
+   * ourselves.
    */
   _request(path, params = {}, timeout = TIMEOUT_INFO) {
     return new Promise((resolve, reject) => {
@@ -22,19 +24,28 @@ class KohlerApi {
         url.searchParams.set(key, String(value));
       }
 
-      const req = http.get(url, {
-        insecureHTTPParser: true,
-        timeout,
-      }, (res) => {
-        let body = '';
-        res.on('data', (chunk) => { body += chunk; });
-        res.on('end', () => resolve(body.trim()));
-        res.on('error', (err) => reject(err));
+      const host = url.hostname;
+      const port = parseInt(url.port, 10) || 80;
+      const reqPath = url.pathname + url.search;
+
+      const socket = net.createConnection({ host, port }, () => {
+        socket.write(`GET ${reqPath} HTTP/1.0\r\nHost: ${host}\r\nConnection: close\r\n\r\n`);
       });
 
-      req.on('error', (err) => reject(err));
-      req.on('timeout', () => {
-        req.destroy();
+      let data = '';
+      socket.setEncoding('utf8');
+      socket.setTimeout(timeout);
+
+      socket.on('data', (chunk) => { data += chunk; });
+      socket.on('end', () => {
+        // Strip HTTP headers if present, otherwise treat entire response as body
+        const headerEnd = data.indexOf('\r\n\r\n');
+        const body = headerEnd !== -1 ? data.substring(headerEnd + 4) : data;
+        resolve(body.trim());
+      });
+      socket.on('error', (err) => reject(err));
+      socket.on('timeout', () => {
+        socket.destroy();
         reject(new Error(`Request to ${path} timed out`));
       });
     });
