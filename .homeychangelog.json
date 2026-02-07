@@ -70,5 +70,11 @@
   },
   "1.0.23": {
     "en": "added toogle"
+  },
+  "1.0.24": {
+    "en": "changed toogle again"
+  },
+  "1.0.25": {
+    "en": "button capabilities"
   }
 }
