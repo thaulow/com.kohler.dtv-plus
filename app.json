@@ -208,19 +208,6 @@
           ]
         }
       ],
-      "pair": [
-        {
-          "id": "list_devices",
-          "template": "list_devices",
-          "navigation": {
-            "next": "add_devices"
-          }
-        },
-        {
-          "id": "add_devices",
-          "template": "add_devices"
-        }
-      ],
       "id": "dtv+-amplifier"
     },
     {
@@ -275,19 +262,6 @@
               "value": ""
             }
           ]
-        }
-      ],
-      "pair": [
-        {
-          "id": "list_devices",
-          "template": "list_devices",
-          "navigation": {
-            "next": "add_devices"
-          }
-        },
-        {
-          "id": "add_devices",
-          "template": "add_devices"
         }
       ],
       "id": "dtv+-six-port-valve"
@@ -407,19 +381,6 @@
           ]
         }
       ],
-      "pair": [
-        {
-          "id": "list_devices",
-          "template": "list_devices",
-          "navigation": {
-            "next": "add_devices"
-          }
-        },
-        {
-          "id": "add_devices",
-          "template": "add_devices"
-        }
-      ],
       "id": "dtv+-valve-outlet"
     },
     {
@@ -481,19 +442,6 @@
               "max": 60
             }
           ]
-        }
-      ],
-      "pair": [
-        {
-          "id": "list_devices",
-          "template": "list_devices",
-          "navigation": {
-            "next": "add_devices"
-          }
-        },
-        {
-          "id": "add_devices",
-          "template": "add_devices"
         }
       ],
       "id": "invigoration-steamer"
