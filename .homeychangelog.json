@@ -94,5 +94,8 @@
   },
   "1.0.31": {
     "en": "added fill to svg"
+  },
+  "1.0.32": {
+    "en": "fill change"
   }
 }
