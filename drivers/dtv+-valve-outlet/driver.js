@@ -11,20 +11,17 @@ module.exports = class DtvValveOutletDriver extends Homey.Driver {
     this.log('DTV+ Valve Outlet driver initialized');
   }
 
-  async onPair(session) {
-    let address = '';
+  async onPairListDevices() {
+    const controllers = this.homey.app.getControllerAddresses();
+    if (controllers.length === 0) {
+      throw new Error('No DTV+ System Controller paired yet. Please add a System Controller first.');
+    }
 
-    session.setHandler('address', async (ip) => {
-      const api = new KohlerApi({ address: ip });
-      await api.getValues();
-      address = ip;
-    });
-
-    session.setHandler('list_devices', async () => {
-      const api = new KohlerApi({ address });
+    const devices = [];
+    for (const ctrl of controllers) {
+      const api = new KohlerApi({ address: ctrl.address });
       const values = await api.getValues();
-      const id = values.MAC || address;
-      const devices = [];
+      const id = values.MAC || ctrl.address;
 
       // Valve 1 outlets
       if (values.valve1_installed) {
@@ -44,7 +41,7 @@ module.exports = class DtvValveOutletDriver extends Homey.Driver {
               outletType: typeNum,
               hasMassage,
             },
-            settings: { address },
+            settings: { address: ctrl.address },
           });
         }
       }
@@ -67,26 +64,26 @@ module.exports = class DtvValveOutletDriver extends Homey.Driver {
               outletType: typeNum,
               hasMassage,
             },
-            settings: { address },
+            settings: { address: ctrl.address },
           });
         }
       }
+    }
 
-      // Deduplicate names: if two outlets share a name, append " 1", " 2"
-      const nameCount = {};
-      for (const d of devices) {
-        nameCount[d.name] = (nameCount[d.name] || 0) + 1;
+    // Deduplicate names: if two outlets share a name, append " 1", " 2"
+    const nameCount = {};
+    for (const d of devices) {
+      nameCount[d.name] = (nameCount[d.name] || 0) + 1;
+    }
+    const nameIndex = {};
+    for (const d of devices) {
+      if (nameCount[d.name] > 1) {
+        nameIndex[d.name] = (nameIndex[d.name] || 0) + 1;
+        d.name = `${d.name} ${nameIndex[d.name]}`;
       }
-      const nameIndex = {};
-      for (const d of devices) {
-        if (nameCount[d.name] > 1) {
-          nameIndex[d.name] = (nameIndex[d.name] || 0) + 1;
-          d.name = `${d.name} ${nameIndex[d.name]}`;
-        }
-      }
+    }
 
-      return devices;
-    });
+    return devices;
   }
 
 };

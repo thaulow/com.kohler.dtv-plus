@@ -9,26 +9,28 @@ module.exports = class DtvAmplifierDriver extends Homey.Driver {
     this.log('DTV+ Amplifier driver initialized');
   }
 
-  async onPair(session) {
-    let address = '';
+  async onPairListDevices() {
+    const controllers = this.homey.app.getControllerAddresses();
+    if (controllers.length === 0) {
+      throw new Error('No DTV+ System Controller paired yet. Please add a System Controller first.');
+    }
 
-    session.setHandler('address', async (ip) => {
-      const api = new KohlerApi({ address: ip });
-      await api.getValues();
-      address = ip;
-    });
-
-    session.setHandler('list_devices', async () => {
-      const api = new KohlerApi({ address });
+    const devices = [];
+    for (const ctrl of controllers) {
+      const api = new KohlerApi({ address: ctrl.address });
       const values = await api.getValues();
-      const id = values.MAC || address;
+      const id = values.MAC || ctrl.address;
 
-      return [{
-        name: 'DTV+ Amplifier',
+      devices.push({
+        name: controllers.length > 1
+          ? `DTV+ Amplifier (${ctrl.name})`
+          : 'DTV+ Amplifier',
         data: { id: `${id}-amplifier` },
-        settings: { address },
-      }];
-    });
+        settings: { address: ctrl.address },
+      });
+    }
+
+    return devices;
   }
 
 };

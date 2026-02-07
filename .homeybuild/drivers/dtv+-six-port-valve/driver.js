@@ -9,53 +9,51 @@ module.exports = class DtvValveDriver extends Homey.Driver {
     this.log('DTV+ Valve driver initialized');
   }
 
-  async onPair(session) {
-    let address = '';
+  async onPairListDevices() {
+    const controllers = this.homey.app.getControllerAddresses();
+    if (controllers.length === 0) {
+      throw new Error('No DTV+ System Controller paired yet. Please add a System Controller first.');
+    }
 
-    session.setHandler('address', async (ip) => {
-      const api = new KohlerApi({ address: ip });
-      await api.getValues();
-      address = ip;
-    });
-
-    session.setHandler('list_devices', async () => {
-      const api = new KohlerApi({ address });
+    const devices = [];
+    for (const ctrl of controllers) {
+      const api = new KohlerApi({ address: ctrl.address });
       const values = await api.getValues();
-      const id = values.MAC || address;
-      const devices = [];
+      const id = values.MAC || ctrl.address;
+      const suffix = controllers.length > 1 ? ` (${ctrl.name})` : '';
 
       if (values.valve1_installed) {
         const ports = parseInt(values.valve1PortsAvailable) || 6;
         devices.push({
-          name: values.valve1_name || 'DTV+ Valve 1',
+          name: (values.valve1_name || 'DTV+ Valve 1') + suffix,
           data: { id: `${id}-valve1` },
           store: { valveNumber: 1, portsAvailable: ports },
-          settings: { address },
+          settings: { address: ctrl.address },
         });
       }
 
       if (values.valve2_installed) {
         const ports = parseInt(values.valve2PortsAvailable) || 6;
         devices.push({
-          name: values.valve2_name || 'DTV+ Valve 2',
+          name: (values.valve2_name || 'DTV+ Valve 2') + suffix,
           data: { id: `${id}-valve2` },
           store: { valveNumber: 2, portsAvailable: ports },
-          settings: { address },
+          settings: { address: ctrl.address },
         });
       }
 
-      // If nothing detected, offer valve 1 as default
-      if (devices.length === 0) {
+      // If nothing detected on this controller, offer valve 1 as default
+      if (!values.valve1_installed && !values.valve2_installed) {
         devices.push({
-          name: 'DTV+ Valve 1',
+          name: 'DTV+ Valve 1' + suffix,
           data: { id: `${id}-valve1` },
           store: { valveNumber: 1, portsAvailable: 6 },
-          settings: { address },
+          settings: { address: ctrl.address },
         });
       }
+    }
 
-      return devices;
-    });
+    return devices;
   }
 
 };

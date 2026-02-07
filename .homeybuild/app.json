@@ -1,7 +1,7 @@
 {
   "_comment": "This file is generated. Please edit .homeycompose/app.json instead.",
   "id": "com.kohler.dtv-plus",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "compatibility": ">=12.2.0",
   "sdk": 3,
   "platforms": [
@@ -210,12 +210,6 @@
       ],
       "pair": [
         {
-          "id": "address",
-          "navigation": {
-            "next": "list_devices"
-          }
-        },
-        {
           "id": "list_devices",
           "template": "list_devices",
           "navigation": {
@@ -284,12 +278,6 @@
         }
       ],
       "pair": [
-        {
-          "id": "address",
-          "navigation": {
-            "next": "list_devices"
-          }
-        },
         {
           "id": "list_devices",
           "template": "list_devices",
@@ -421,12 +409,6 @@
       ],
       "pair": [
         {
-          "id": "address",
-          "navigation": {
-            "next": "list_devices"
-          }
-        },
-        {
           "id": "list_devices",
           "template": "list_devices",
           "navigation": {
@@ -502,12 +484,6 @@
         }
       ],
       "pair": [
-        {
-          "id": "address",
-          "navigation": {
-            "next": "list_devices"
-          }
-        },
         {
           "id": "list_devices",
           "template": "list_devices",

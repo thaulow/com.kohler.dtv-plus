@@ -210,12 +210,6 @@
       ],
       "pair": [
         {
-          "id": "address",
-          "navigation": {
-            "next": "list_devices"
-          }
-        },
-        {
           "id": "list_devices",
           "template": "list_devices",
           "navigation": {
@@ -284,12 +278,6 @@
         }
       ],
       "pair": [
-        {
-          "id": "address",
-          "navigation": {
-            "next": "list_devices"
-          }
-        },
         {
           "id": "list_devices",
           "template": "list_devices",
@@ -421,12 +409,6 @@
       ],
       "pair": [
         {
-          "id": "address",
-          "navigation": {
-            "next": "list_devices"
-          }
-        },
-        {
           "id": "list_devices",
           "template": "list_devices",
           "navigation": {
@@ -502,12 +484,6 @@
         }
       ],
       "pair": [
-        {
-          "id": "address",
-          "navigation": {
-            "next": "list_devices"
-          }
-        },
         {
           "id": "list_devices",
           "template": "list_devices",
