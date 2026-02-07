@@ -3,7 +3,7 @@
   "title": { "en": "Outlet" },
   "getable": true,
   "setable": true,
-  "uiComponent": "button",
+  "uiComponent": "toggle",
   "uiQuickAction": false,
   "insights": false
 }

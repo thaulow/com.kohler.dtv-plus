@@ -44,12 +44,12 @@ module.exports = class KohlerDtvDevice extends Homey.Device {
   _initValve() {
     // Set initial temperature from the controller's default setpoint
     const defaultSetpoint = this.getStoreValue('defaultSetpoint');
-    if (defaultSetpoint != null && this.getCapabilityValue('valve_setpoint') == null) {
-      this.setCapabilityValue('valve_setpoint', defaultSetpoint).catch(this.error);
+    if (defaultSetpoint != null && this.getCapabilityValue('target_temperature') == null) {
+      this.setCapabilityValue('target_temperature', defaultSetpoint).catch(this.error);
     }
 
     this.registerCapabilityListener('shower_toggle', this._onValveOnOff.bind(this));
-    this.registerCapabilityListener('valve_setpoint', this._onValveTargetTemp.bind(this));
+    this.registerCapabilityListener('target_temperature', this._onValveTargetTemp.bind(this));
 
     // Register listeners for each outlet toggle (outlet_toggle.1, outlet_toggle.2, etc.)
     const ports = this.getStoreValue('portsAvailable') || 6;
@@ -160,7 +160,7 @@ module.exports = class KohlerDtvDevice extends Homey.Device {
   }
 
   _getValveTargetTempForApi() {
-    const homeyTemp = this.getCapabilityValue('valve_setpoint') || 38;
+    const homeyTemp = this.getCapabilityValue('target_temperature') || 38;
     const info = this._lastInfo || {};
     return KohlerApi.fromHomeyTemp(homeyTemp, info);
   }
@@ -181,7 +181,7 @@ module.exports = class KohlerDtvDevice extends Homey.Device {
     // Update target temperature setpoint
     const rawSetpoint = KohlerApi.toHomeyTemp(info[`valve${v}Setpoint`], info);
     if (rawSetpoint !== null) {
-      await this.setCapabilityValue('valve_setpoint', rawSetpoint).catch(this.error);
+      await this.setCapabilityValue('target_temperature', rawSetpoint).catch(this.error);
     }
 
     // Update master on/off from valve status
