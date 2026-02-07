@@ -1,5 +1,8 @@
 {
   "1.0.0": {
     "en": "Initial publication. Support for managing DTV+ valves, audio and steam"
+  },
+  "1.0.1": {
+    "en": "\"changed kohler brand logo\""
   }
 }
