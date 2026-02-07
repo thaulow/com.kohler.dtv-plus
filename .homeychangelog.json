@@ -13,5 +13,8 @@
   },
   "1.0.4": {
     "en": "Fixed app icon using fill attribute instead of CSS style"
+  },
+  "1.0.5": {
+    "en": "Fixed app icon using black fill for proper Homey mask rendering"
   }
 }
