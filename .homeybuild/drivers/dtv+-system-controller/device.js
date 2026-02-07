@@ -13,7 +13,7 @@ module.exports = class KohlerDtvDevice extends Homey.Device {
 
     // Set device class based on type
     const CLASS_MAP = {
-      valve: 'thermostat',
+      valve: 'other',
       amplifier: 'speaker',
       steamer: 'heater',
     };
@@ -43,10 +43,10 @@ module.exports = class KohlerDtvDevice extends Homey.Device {
     this.registerCapabilityListener('onoff', this._onValveOnOff.bind(this));
     this.registerCapabilityListener('target_temperature', this._onValveTargetTemp.bind(this));
 
-    // Register listeners for each outlet toggle (onoff.outlet_1, onoff.outlet_2, etc.)
+    // Register listeners for each outlet toggle (outlet_toggle.1, outlet_toggle.2, etc.)
     const ports = this.getStoreValue('portsAvailable') || 6;
     for (let i = 1; i <= ports; i++) {
-      const capId = `onoff.outlet_${i}`;
+      const capId = `outlet_toggle.${i}`;
       if (this.hasCapability(capId)) {
         this.registerCapabilityListener(capId, this._onOutletToggle.bind(this, i));
       }
@@ -97,12 +97,12 @@ module.exports = class KohlerDtvDevice extends Homey.Device {
     this.homey.app.requestPoll(this._address);
   }
 
-  /** Build outlet string from the onoff.outlet_N toggle states */
+  /** Build outlet string from the outlet_toggle.N toggle states */
   _getEnabledOutletString() {
     const ports = this.getStoreValue('portsAvailable') || 6;
     let str = '';
     for (let i = 1; i <= ports; i++) {
-      const capId = `onoff.outlet_${i}`;
+      const capId = `outlet_toggle.${i}`;
       if (this.hasCapability(capId) && this.getCapabilityValue(capId)) {
         str += String(i);
       }
@@ -179,7 +179,7 @@ module.exports = class KohlerDtvDevice extends Homey.Device {
     // Update individual outlet toggle states from controller
     const ports = this.getStoreValue('portsAvailable') || 6;
     for (let i = 1; i <= ports; i++) {
-      const capId = `onoff.outlet_${i}`;
+      const capId = `outlet_toggle.${i}`;
       if (this.hasCapability(capId)) {
         const isOpen = !!info[`valve${v}outlet${i}`];
         await this.setCapabilityValue(capId, isOpen).catch(this.error);

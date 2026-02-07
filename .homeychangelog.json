@@ -43,5 +43,8 @@
   },
   "1.0.14": {
     "en": "Changed outlets to thermostat option\""
+  },
+  "1.0.15": {
+    "en": "Changed version"
   }
 }

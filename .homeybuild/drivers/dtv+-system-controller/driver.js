@@ -83,13 +83,14 @@ module.exports = class KohlerDtvDriver extends Homey.Driver {
         const outlets = [];
         const caps = ['onoff', 'target_temperature', 'measure_temperature'];
         const capOpts = {
+          onoff: { uiQuickAction: true },
           target_temperature: { min: 30, max: 45, step: 0.5 },
         };
 
         for (let i = 1; i <= vc.ports; i++) {
           const typeKey = `${vc.prefix}${ORDINALS[i]}_type`;
           const typeName = KohlerApi.outletTypeName(values[typeKey]);
-          const capId = `onoff.outlet_${i}`;
+          const capId = `outlet_toggle.${i}`;
           caps.push(capId);
           capOpts[capId] = { title: { en: typeName } };
           outlets.push({ number: i, typeName });
@@ -107,7 +108,7 @@ module.exports = class KohlerDtvDriver extends Homey.Driver {
           settings: { address },
           capabilities: caps,
           capabilitiesOptions: capOpts,
-          class: 'thermostat',
+          class: 'other',
         });
       }
 
