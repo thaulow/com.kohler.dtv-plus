@@ -61,5 +61,8 @@
   },
   "1.0.20": {
     "en": "changed icons and slider for heat"
+  },
+  "1.0.21": {
+    "en": "changed setpoints"
   }
 }
