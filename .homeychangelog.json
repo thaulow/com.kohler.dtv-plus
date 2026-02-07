@@ -85,5 +85,8 @@
   },
   "1.0.28": {
     "en": "added default icon"
+  },
+  "1.0.29": {
+    "en": "added device icons"
   }
 }
