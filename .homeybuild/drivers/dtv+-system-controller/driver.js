@@ -97,7 +97,7 @@ module.exports = class KohlerDtvDriver extends Homey.Driver {
         const outlets = [];
         const caps = [];
         const capOpts = {
-          target_temperature: { min: 30, max: 45, step: 0.5 },
+          target_temperature: { min: 30, max: 45, step: 0.5, uiComponent: 'slider' },
         };
 
         // Outlet buttons first so the button grid is the default page
