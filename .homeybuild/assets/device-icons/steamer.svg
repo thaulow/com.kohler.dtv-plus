@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <!-- Base unit (outline via evenodd) -->
-  <path d="M12 42 C12 40 14 38 16 38 L48 38 C50 38 52 40 52 42 L52 56 C52 58 50 60 48 60 L16 60 C14 60 12 58 12 56 Z M16 42 L16 56 L48 56 L48 42 Z" fill="black" fill-rule="evenodd"/>
-  <!-- Indicator dot -->
-  <circle cx="20" cy="49" r="3" fill="black"/>
+  <!-- Base unit -->
+  <rect x="8" y="44" width="48" height="16" rx="4" fill="black"/>
   <!-- Steam wisp left -->
-  <path d="M22 34 C22 30 18 28 18 24 C18 20 22 18 22 14 L26 14 C26 18 22 20 22 24 C22 28 26 30 26 34 Z" fill="black"/>
+  <path d="M18 40 C18 36 14 34 14 30 C14 26 18 24 18 20 C18 16 14 14 14 10 L18 10 C18 14 22 16 22 20 C22 24 18 26 18 30 C18 34 22 36 22 40 Z" fill="black"/>
   <!-- Steam wisp center -->
-  <path d="M30 34 C30 30 26 28 26 24 C26 20 30 18 30 14 L34 14 C34 18 30 20 30 24 C30 28 34 30 34 34 Z" fill="black"/>
+  <path d="M30 40 C30 36 26 34 26 30 C26 26 30 24 30 20 C30 16 26 14 26 10 L30 10 C30 14 34 16 34 20 C34 24 30 26 30 30 C30 34 34 36 34 40 Z" fill="black"/>
   <!-- Steam wisp right -->
-  <path d="M38 34 C38 30 34 28 34 24 C34 20 38 18 38 14 L42 14 C42 18 38 20 38 24 C38 28 42 30 42 34 Z" fill="black"/>
+  <path d="M42 40 C42 36 38 34 38 30 C38 26 42 24 42 20 C42 16 38 14 38 10 L42 10 C42 14 46 16 46 20 C46 24 42 26 42 30 C42 34 46 36 46 40 Z" fill="black"/>
 </svg>
