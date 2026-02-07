@@ -9,7 +9,7 @@
     {
       "type": "device",
       "name": "device",
-      "filter": "driver_id=dtv+-six-port-valve"
+      "filter": "driver_id=dtv+-system-controller"
     }
   ],
   "tokens": [

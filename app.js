@@ -72,20 +72,6 @@ module.exports = class KohlerKonnectApp extends Homey.App {
     }, COMMAND_POLL_DELAY);
   }
 
-  // ── Controller discovery (used by subordinate drivers during pairing) ──
-
-  getControllerAddresses() {
-    try {
-      const scDriver = this.homey.drivers.getDriver('dtv+-system-controller');
-      return scDriver.getDevices().map((d) => ({
-        address: d.getSetting('address'),
-        name: d.getName(),
-      }));
-    } catch {
-      return [];
-    }
-  }
-
   // ── Internal ───────────────────────────────────────────────────────
 
   _ensureController(address) {

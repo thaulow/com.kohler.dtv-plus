@@ -1,18 +1,9 @@
 {
   "name": {
-    "en": "DTV+ System Controller"
+    "en": "Kohler DTV+"
   },
   "class": "other",
-  "capabilities": [
-    "onoff"
-  ],
-  "capabilitiesOptions": {
-    "onoff": {
-      "title": {
-        "en": "Shower"
-      }
-    }
-  },
+  "capabilities": [],
   "platforms": [
     "local"
   ],

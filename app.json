@@ -42,7 +42,7 @@
           {
             "type": "device",
             "name": "device",
-            "filter": "driver_id=dtv+-six-port-valve"
+            "filter": "driver_id=dtv+-system-controller"
           }
         ],
         "tokens": [
@@ -123,7 +123,7 @@
           {
             "type": "device",
             "name": "device",
-            "filter": "driver_id=invigoration-steamer"
+            "filter": "driver_id=dtv+-system-controller"
           },
           {
             "type": "range",
@@ -169,118 +169,10 @@
   "drivers": [
     {
       "name": {
-        "en": "DTV+ Amplifier"
-      },
-      "class": "speaker",
-      "capabilities": [
-        "onoff",
-        "volume_set"
-      ],
-      "platforms": [
-        "local"
-      ],
-      "connectivity": [
-        "lan"
-      ],
-      "images": {
-        "small": "/drivers/dtv+-amplifier/assets/images/small.png",
-        "large": "/drivers/dtv+-amplifier/assets/images/large.png",
-        "xlarge": "/drivers/dtv+-amplifier/assets/images/xlarge.png"
-      },
-      "settings": [
-        {
-          "type": "group",
-          "label": {
-            "en": "Connection"
-          },
-          "children": [
-            {
-              "id": "address",
-              "type": "text",
-              "label": {
-                "en": "IP Address"
-              },
-              "hint": {
-                "en": "IP address of your Kohler DTV+ controller"
-              },
-              "value": ""
-            }
-          ]
-        }
-      ],
-      "id": "dtv+-amplifier"
-    },
-    {
-      "name": {
-        "en": "DTV+ Thermostatic Valve"
-      },
-      "class": "thermostat",
-      "capabilities": [
-        "onoff",
-        "target_temperature",
-        "measure_temperature"
-      ],
-      "capabilitiesOptions": {
-        "onoff": {
-          "title": {
-            "en": "Valve"
-          }
-        },
-        "target_temperature": {
-          "min": 30,
-          "max": 45,
-          "step": 0.5
-        }
-      },
-      "platforms": [
-        "local"
-      ],
-      "connectivity": [
-        "lan"
-      ],
-      "images": {
-        "small": "/drivers/dtv+-six-port-valve/assets/images/small.png",
-        "large": "/drivers/dtv+-six-port-valve/assets/images/large.png",
-        "xlarge": "/drivers/dtv+-six-port-valve/assets/images/xlarge.png"
-      },
-      "settings": [
-        {
-          "type": "group",
-          "label": {
-            "en": "Connection"
-          },
-          "children": [
-            {
-              "id": "address",
-              "type": "text",
-              "label": {
-                "en": "IP Address"
-              },
-              "hint": {
-                "en": "IP address of your Kohler DTV+ controller"
-              },
-              "value": ""
-            }
-          ]
-        }
-      ],
-      "id": "dtv+-six-port-valve"
-    },
-    {
-      "name": {
-        "en": "DTV+ System Controller"
+        "en": "Kohler DTV+"
       },
       "class": "other",
-      "capabilities": [
-        "onoff"
-      ],
-      "capabilitiesOptions": {
-        "onoff": {
-          "title": {
-            "en": "Shower"
-          }
-        }
-      },
+      "capabilities": [],
       "platforms": [
         "local"
       ],
@@ -333,118 +225,6 @@
         }
       ],
       "id": "dtv+-system-controller"
-    },
-    {
-      "name": {
-        "en": "DTV+ Valve Outlet"
-      },
-      "class": "other",
-      "capabilities": [
-        "onoff"
-      ],
-      "capabilitiesOptions": {
-        "onoff": {
-          "title": {
-            "en": "Outlet"
-          }
-        }
-      },
-      "platforms": [
-        "local"
-      ],
-      "connectivity": [
-        "lan"
-      ],
-      "images": {
-        "small": "/drivers/dtv+-valve-outlet/assets/images/small.png",
-        "large": "/drivers/dtv+-valve-outlet/assets/images/large.png",
-        "xlarge": "/drivers/dtv+-valve-outlet/assets/images/xlarge.png"
-      },
-      "settings": [
-        {
-          "type": "group",
-          "label": {
-            "en": "Connection"
-          },
-          "children": [
-            {
-              "id": "address",
-              "type": "text",
-              "label": {
-                "en": "IP Address"
-              },
-              "hint": {
-                "en": "IP address of your Kohler DTV+ controller"
-              },
-              "value": ""
-            }
-          ]
-        }
-      ],
-      "id": "dtv+-valve-outlet"
-    },
-    {
-      "name": {
-        "en": "Invigoration Steamer"
-      },
-      "class": "heater",
-      "capabilities": [
-        "onoff",
-        "target_temperature"
-      ],
-      "capabilitiesOptions": {
-        "target_temperature": {
-          "min": 35,
-          "max": 48,
-          "step": 1
-        }
-      },
-      "platforms": [
-        "local"
-      ],
-      "connectivity": [
-        "lan"
-      ],
-      "images": {
-        "small": "/drivers/invigoration-steamer/assets/images/small.png",
-        "large": "/drivers/invigoration-steamer/assets/images/large.png",
-        "xlarge": "/drivers/invigoration-steamer/assets/images/xlarge.png"
-      },
-      "settings": [
-        {
-          "type": "group",
-          "label": {
-            "en": "Connection"
-          },
-          "children": [
-            {
-              "id": "address",
-              "type": "text",
-              "label": {
-                "en": "IP Address"
-              },
-              "hint": {
-                "en": "IP address of your Kohler DTV+ controller"
-              },
-              "value": ""
-            },
-            {
-              "id": "steamDuration",
-              "type": "number",
-              "label": {
-                "en": "Default Steam Duration (minutes)"
-              },
-              "hint": {
-                "en": "How long the steam generator runs when turned on"
-              },
-              "value": 10,
-              "min": 1,
-              "max": 60
-            }
-          ]
-        }
-      ],
-      "id": "invigoration-steamer"
     }
   ]
 }

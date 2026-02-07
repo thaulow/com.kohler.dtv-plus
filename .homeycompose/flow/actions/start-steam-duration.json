@@ -12,7 +12,7 @@
     {
       "type": "device",
       "name": "device",
-      "filter": "driver_id=invigoration-steamer"
+      "filter": "driver_id=dtv+-system-controller"
     },
     {
       "type": "range",
