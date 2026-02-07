@@ -40,5 +40,8 @@
   },
   "1.0.13": {
     "en": "changed to single driver"
+  },
+  "1.0.14": {
+    "en": "Changed outlets to thermostat option\""
   }
 }
