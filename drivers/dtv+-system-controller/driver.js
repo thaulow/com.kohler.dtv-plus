@@ -125,7 +125,7 @@ module.exports = class KohlerDtvDriver extends Homey.Driver {
         devices.push({
           name: vc.name,
           data: { id: `${id}-valve${vc.num}` },
-          icon: `/assets/device-icons/valve.svg`,
+          icon: `/valve.svg`,
           store: {
             deviceType: 'valve',
             valveNumber: vc.num,
@@ -145,7 +145,7 @@ module.exports = class KohlerDtvDriver extends Homey.Driver {
       devices.push({
         name: 'DTV+ Amplifier',
         data: { id: `${id}-amplifier` },
-        icon: `/assets/device-icons/amplifier.svg`,
+        icon: `/amplifier.svg`,
         store: { deviceType: 'amplifier', userPresets },
         settings: { address },
         capabilities: ['onoff', 'volume_set'],
@@ -158,7 +158,7 @@ module.exports = class KohlerDtvDriver extends Homey.Driver {
         devices.push({
           name: 'Invigoration Steamer',
           data: { id: `${id}-steamer` },
-          icon: `/assets/device-icons/steamer.svg`,
+          icon: `/steamer.svg`,
           store: {
             deviceType: 'steamer',
             defaultSteamTemp: isNaN(defaultSteamTemp) ? 43 : defaultSteamTemp,
@@ -180,7 +180,7 @@ module.exports = class KohlerDtvDriver extends Homey.Driver {
           devices.push({
             name,
             data: { id: `${id}-light${z}` },
-            icon: `/assets/device-icons/light.svg`,
+            icon: `/light.svg`,
             store: { deviceType: 'light', lightZone: z },
             settings: { address },
             capabilities: ['onoff', 'dim'],

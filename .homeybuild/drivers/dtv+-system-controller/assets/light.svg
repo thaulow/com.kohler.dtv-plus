@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Bulb -->
+  <path d="M32 4 C21 4 12 13 12 24 C12 32 17 37 22 42 L22 48 L42 48 L42 42 C47 37 52 32 52 24 C52 13 43 4 32 4 Z" fill="black"/>
+  <!-- Base ring 1 -->
+  <rect x="22" y="50" width="20" height="4" rx="2" fill="black"/>
+  <!-- Base ring 2 -->
+  <rect x="24" y="56" width="16" height="4" rx="2" fill="black"/>
+</svg>
