@@ -100,5 +100,8 @@
   },
   "1.0.33": {
     "en": "changed device driver icons"
+  },
+  "1.0.34": {
+    "en": "Add support for outlet flows"
   }
 }
