@@ -1,0 +1,15 @@
+{
+  "title": {
+    "en": "Shower turned off"
+  },
+  "hint": {
+    "en": "Triggered when the shower stops running"
+  },
+  "args": [
+    {
+      "type": "device",
+      "name": "device",
+      "filter": "driver_id=dtv+-system-controller"
+    }
+  ]
+}

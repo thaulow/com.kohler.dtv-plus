@@ -1,0 +1,24 @@
+{
+  "title": {
+    "en": "Shower outlet is on"
+  },
+  "titleFormatted": {
+    "en": "Shower outlet [[outlet]] is on"
+  },
+  "hint": {
+    "en": "Check if a specific shower outlet is currently active"
+  },
+  "args": [
+    {
+      "type": "device",
+      "name": "device",
+      "filter": "driver_id=dtv+-system-controller"
+    },
+    {
+      "type": "autocomplete",
+      "name": "outlet",
+      "title": { "en": "Outlet" },
+      "placeholder": { "en": "Select an outlet…" }
+    }
+  ]
+}

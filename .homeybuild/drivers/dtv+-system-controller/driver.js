@@ -43,6 +43,51 @@ module.exports = class KohlerDtvDriver extends Homey.Driver {
         await args.device.api.steamOn(apiTemp, args.duration);
         args.device.homey.app.requestPoll(args.device._address);
       });
+
+    // ── Outlet on/off action cards ──────────────────────────────────
+
+    const outletAutocomplete = async (query, args) => {
+      const outlets = args.device.getStoreValue('outlets') || [];
+      return outlets
+        .map((o) => ({ id: o.number, name: o.typeName }))
+        .filter((o) => o.name.toLowerCase().includes(query.toLowerCase()));
+    };
+
+    const turnOnCard = this.homey.flow.getActionCard('turn-on-outlet');
+    turnOnCard.registerRunListener(async (args) => {
+      const capId = `outlet_${args.outlet.id}`;
+      await args.device.setCapabilityValue(capId, true);
+      if (!args.device.getCapabilityValue('shower_toggle')) {
+        await args.device._onValveOnOff(true);
+      } else {
+        await args.device._onOutletToggle(args.outlet.id, true);
+      }
+    });
+    turnOnCard.registerArgumentAutocompleteListener('outlet', outletAutocomplete);
+
+    const turnOffCard = this.homey.flow.getActionCard('turn-off-outlet');
+    turnOffCard.registerRunListener(async (args) => {
+      const capId = `outlet_${args.outlet.id}`;
+      await args.device.setCapabilityValue(capId, false);
+      if (args.device.getCapabilityValue('shower_toggle')) {
+        await args.device._onOutletToggle(args.outlet.id, false);
+      }
+    });
+    turnOffCard.registerArgumentAutocompleteListener('outlet', outletAutocomplete);
+
+    this.homey.flow.getActionCard('start-shower')
+      .registerRunListener(async (args) => {
+        await args.device._onValveOnOff(true);
+      });
+
+    // ── Outlet condition card ───────────────────────────────────────
+
+    const outletCondition = this.homey.flow.getConditionCard('outlet-is-on');
+    outletCondition.registerRunListener(async (args) => {
+      const capId = `outlet_${args.outlet.id}`;
+      return !!args.device.getCapabilityValue(capId);
+    });
+    outletCondition.registerArgumentAutocompleteListener('outlet', outletAutocomplete);
   }
 
   async onPair(session) {

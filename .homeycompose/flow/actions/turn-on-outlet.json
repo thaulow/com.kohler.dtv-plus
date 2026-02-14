@@ -1,0 +1,24 @@
+{
+  "title": {
+    "en": "Turn on shower outlet"
+  },
+  "titleFormatted": {
+    "en": "Turn on shower outlet [[outlet]]"
+  },
+  "hint": {
+    "en": "Enable a specific shower outlet and start the shower if not already running"
+  },
+  "args": [
+    {
+      "type": "device",
+      "name": "device",
+      "filter": "driver_id=dtv+-system-controller"
+    },
+    {
+      "type": "autocomplete",
+      "name": "outlet",
+      "title": { "en": "Outlet" },
+      "placeholder": { "en": "Select an outlet…" }
+    }
+  ]
+}

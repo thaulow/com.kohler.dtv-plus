@@ -1,0 +1,15 @@
+{
+  "title": {
+    "en": "Start the shower"
+  },
+  "hint": {
+    "en": "Start the shower with the currently enabled outlets"
+  },
+  "args": [
+    {
+      "type": "device",
+      "name": "device",
+      "filter": "driver_id=dtv+-system-controller"
+    }
+  ]
+}

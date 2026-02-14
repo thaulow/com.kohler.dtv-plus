@@ -69,8 +69,10 @@ module.exports = class KohlerDtvDevice extends Homey.Device {
       }
     }
 
-    // Device trigger card: water temperature changed
+    // Device trigger cards
     this._tempTrigger = this.homey.flow.getDeviceTriggerCard('valve-temperature-changed');
+    this._showerOnTrigger = this.homey.flow.getDeviceTriggerCard('shower-turned-on');
+    this._showerOffTrigger = this.homey.flow.getDeviceTriggerCard('shower-turned-off');
   }
 
   async _onValveOnOff(value) {
@@ -195,7 +197,13 @@ module.exports = class KohlerDtvDevice extends Homey.Device {
 
     // Update master on/off from valve status
     const isOn = info[`valve${v}_Currentstatus`] === 'On';
+    const wasOn = this.getCapabilityValue('shower_toggle');
     await this.setCapabilityValue('shower_toggle', isOn).catch(this.error);
+    if (isOn && !wasOn && this._showerOnTrigger) {
+      this._showerOnTrigger.trigger(this).catch(this.error);
+    } else if (!isOn && wasOn && this._showerOffTrigger) {
+      this._showerOffTrigger.trigger(this).catch(this.error);
+    }
 
     // Update individual outlet toggle states from controller
     const ports = this.getStoreValue('portsAvailable') || 6;

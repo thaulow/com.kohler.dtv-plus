@@ -1,0 +1,15 @@
+{
+  "title": {
+    "en": "Shower turned on"
+  },
+  "hint": {
+    "en": "Triggered when the shower starts running"
+  },
+  "args": [
+    {
+      "type": "device",
+      "name": "device",
+      "filter": "driver_id=dtv+-system-controller"
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "title": {
+    "en": "Turn off shower outlet"
+  },
+  "titleFormatted": {
+    "en": "Turn off shower outlet [[outlet]]"
+  },
+  "hint": {
+    "en": "Disable a specific shower outlet; stops the shower if it was the last active outlet"
+  },
+  "args": [
+    {
+      "type": "device",
+      "name": "device",
+      "filter": "driver_id=dtv+-system-controller"
+    },
+    {
+      "type": "autocomplete",
+      "name": "outlet",
+      "title": { "en": "Outlet" },
+      "placeholder": { "en": "Select an outlet…" }
+    }
+  ]
+}
