@@ -103,5 +103,8 @@
   },
   "1.0.34": {
     "en": "Add support for outlet flows"
+  },
+  "1.0.35": {
+    "en": "Fixed decoding bug for flow card outlets"
   }
 }
