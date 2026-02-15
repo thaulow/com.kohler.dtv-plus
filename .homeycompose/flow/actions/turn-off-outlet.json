@@ -3,7 +3,7 @@
     "en": "Turn off shower outlet"
   },
   "titleFormatted": {
-    "en": "Turn off shower outlet [[outlet]]"
+    "en": "Turn off outlet [[outlet]]"
   },
   "hint": {
     "en": "Disable a specific shower outlet; stops the shower if it was the last active outlet"

@@ -3,7 +3,7 @@
     "en": "Shower outlet is on"
   },
   "titleFormatted": {
-    "en": "Shower outlet [[outlet]] is on"
+    "en": "Outlet [[outlet]] is on"
   },
   "hint": {
     "en": "Check if a specific shower outlet is currently active"
