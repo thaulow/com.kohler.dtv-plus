@@ -57,7 +57,12 @@ module.exports = class KohlerDtvDevice extends Homey.Device {
     for (let i = 1; i <= ports; i++) {
       const capId = `outlet_${i}`;
       if (this.hasCapability(capId)) {
-        this.registerCapabilityListener(capId, this._onOutletToggle.bind(this, i));
+        this.registerCapabilityListener(capId, async () => {
+          // Button always sends true; toggle the actual state instead
+          const wasOn = !!this.getCapabilityValue(capId);
+          await this.setCapabilityValue(capId, !wasOn).catch(this.error);
+          await this._onOutletToggle(i, !wasOn);
+        });
 
         // Set outlet title from stored type name
         const outlet = outlets.find((o) => o.number === i);

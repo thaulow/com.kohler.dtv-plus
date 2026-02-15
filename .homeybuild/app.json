@@ -1,7 +1,7 @@
 {
   "_comment": "This file is generated. Please edit .homeycompose/app.json instead.",
   "id": "com.kohler.dtv-plus",
-  "version": "1.0.33",
+  "version": "1.0.34",
   "compatibility": ">=12.2.0",
   "sdk": 3,
   "platforms": [
@@ -42,7 +42,7 @@
           {
             "type": "device",
             "name": "device",
-            "filter": "driver_id=dtv+-system-controller"
+            "filter": "driver_id=dtv%2B-system-controller"
           }
         ],
         "id": "shower-turned-off"
@@ -58,7 +58,7 @@
           {
             "type": "device",
             "name": "device",
-            "filter": "driver_id=dtv+-system-controller"
+            "filter": "driver_id=dtv%2B-system-controller"
           }
         ],
         "id": "shower-turned-on"
@@ -74,7 +74,7 @@
           {
             "type": "device",
             "name": "device",
-            "filter": "driver_id=dtv+-system-controller"
+            "filter": "driver_id=dtv%2B-system-controller"
           }
         ],
         "tokens": [
@@ -105,7 +105,7 @@
           {
             "type": "device",
             "name": "device",
-            "filter": "driver_id=dtv+-system-controller"
+            "filter": "driver_id=dtv%2B-system-controller"
           },
           {
             "type": "autocomplete",
@@ -131,7 +131,7 @@
           {
             "type": "device",
             "name": "device",
-            "filter": "driver_id=dtv+-system-controller"
+            "filter": "driver_id=dtv%2B-system-controller"
           }
         ],
         "id": "shower-is-running"
@@ -152,7 +152,7 @@
           {
             "type": "device",
             "name": "device",
-            "filter": "driver_id=dtv+-system-controller"
+            "filter": "driver_id=dtv%2B-system-controller"
           },
           {
             "type": "autocomplete",
@@ -178,7 +178,7 @@
           {
             "type": "device",
             "name": "device",
-            "filter": "driver_id=dtv+-system-controller"
+            "filter": "driver_id=dtv%2B-system-controller"
           }
         ],
         "id": "start-shower"
@@ -197,7 +197,7 @@
           {
             "type": "device",
             "name": "device",
-            "filter": "driver_id=dtv+-system-controller"
+            "filter": "driver_id=dtv%2B-system-controller"
           },
           {
             "type": "range",
@@ -233,7 +233,7 @@
           {
             "type": "device",
             "name": "device",
-            "filter": "driver_id=dtv+-system-controller"
+            "filter": "driver_id=dtv%2B-system-controller"
           }
         ],
         "id": "stop-shower"
@@ -252,7 +252,7 @@
           {
             "type": "device",
             "name": "device",
-            "filter": "driver_id=dtv+-system-controller"
+            "filter": "driver_id=dtv%2B-system-controller"
           },
           {
             "type": "autocomplete",
@@ -281,7 +281,7 @@
           {
             "type": "device",
             "name": "device",
-            "filter": "driver_id=dtv+-system-controller"
+            "filter": "driver_id=dtv%2B-system-controller"
           },
           {
             "type": "autocomplete",
@@ -439,7 +439,7 @@
       },
       "getable": true,
       "setable": true,
-      "uiComponent": "button",
+      "uiComponent": "toggle",
       "uiQuickAction": true,
       "insights": false,
       "icon": "/assets/icon.svg"

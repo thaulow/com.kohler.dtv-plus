@@ -12,7 +12,7 @@
     {
       "type": "device",
       "name": "device",
-      "filter": "driver_id=dtv+-system-controller"
+      "filter": "driver_id=dtv%2B-system-controller"
     },
     {
       "type": "autocomplete",
