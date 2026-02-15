@@ -106,5 +106,8 @@
   },
   "1.0.35": {
     "en": "Fixed decoding bug for flow card outlets"
+  },
+  "1.0.36": {
+    "en": "fixed bug"
   }
 }
