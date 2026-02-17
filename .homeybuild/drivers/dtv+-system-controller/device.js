@@ -90,7 +90,8 @@ module.exports = class KohlerDtvDevice extends Homey.Device {
     } else {
       const otherValve = valveNum === 1 ? 2 : 1;
       if (this._isOtherValveRunning(otherValve)) {
-        await this._sendValveShowerCommand(valveNum, '0', 100);
+        const temp = this._getValveTargetTempForApi();
+        await this._sendValveShowerCommand(valveNum, '0', temp);
       } else {
         await this.api.stopShower();
       }
@@ -100,17 +101,20 @@ module.exports = class KohlerDtvDevice extends Homey.Device {
 
   /** Called when an individual outlet toggle changes while the shower may be running */
   async _onOutletToggle(outletNumber, value) {
+    this.log(`[OUTLET] _onOutletToggle called: outletNumber=${outletNumber}, value=${value}`);
     // If the valve isn't on, just store the toggle state (no command needed)
     if (!this.getCapabilityValue('shower_toggle')) return;
 
     const valveNum = this.getStoreValue('valveNumber') || 1;
     const outletStr = this._getEnabledOutletString();
+    this.log(`[OUTLET] Sending command: valve=${valveNum}, outletStr=${outletStr}`);
 
     // If all outlets just got turned off, stop this valve
     if (outletStr === '0') {
       const otherValve = valveNum === 1 ? 2 : 1;
       if (this._isOtherValveRunning(otherValve)) {
-        await this._sendValveShowerCommand(valveNum, '0', 100);
+        const temp = this._getValveTargetTempForApi();
+        await this._sendValveShowerCommand(valveNum, '0', temp);
       } else {
         await this.api.stopShower();
       }
@@ -122,14 +126,16 @@ module.exports = class KohlerDtvDevice extends Homey.Device {
     this.homey.app.requestPoll(this._address);
   }
 
-  /** Build outlet string from the outlet_N toggle states */
+  /** Build outlet string from the outlet_N toggle states.
+   *  quick_shower.cgi uses REVERSED port numbering: config port 1 = API outlet N,
+   *  config port N = API outlet 1 (where N = portsAvailable). */
   _getEnabledOutletString() {
     const ports = this.getStoreValue('portsAvailable') || 6;
     let str = '';
     for (let i = 1; i <= ports; i++) {
       const capId = `outlet_${i}`;
       if (this.hasCapability(capId) && this.getCapabilityValue(capId)) {
-        str += String(i);
+        str += String(ports + 1 - i);
       }
     }
     return str || '0';
@@ -149,7 +155,11 @@ module.exports = class KohlerDtvDevice extends Homey.Device {
     const info = this._lastInfo || {};
     const otherValve = valveNum === 1 ? 2 : 1;
     const otherOutlets = this._getCurrentOutletString(otherValve);
-    const otherTemp = parseFloat(info[`valve${otherValve}Setpoint`]) || 100;
+    // Mirror the active valve's temp when the other valve has no outlets,
+    // because the stored setpoint can be garbage (e.g. 4°C) for unused valves
+    const otherTemp = otherOutlets === '0'
+      ? temp
+      : (parseFloat(info[`valve${otherValve}Setpoint`]) || temp);
     await this.api.startShower({
       valve1Outlet: valveNum === 1 ? outletStr : otherOutlets,
       valve1Temp:   valveNum === 1 ? temp : otherTemp,
@@ -163,9 +173,10 @@ module.exports = class KohlerDtvDevice extends Homey.Device {
     // Only include outlets if the valve is actually running —
     // system_info always reports hardware assignments even when off
     if (info[`valve${valve}_Currentstatus`] !== 'On') return '0';
+    const ports = 6;
     let str = '';
-    for (let i = 1; i <= 6; i++) {
-      if (info[`valve${valve}outlet${i}`]) str += String(i);
+    for (let i = 1; i <= ports; i++) {
+      if (info[`valve${valve}outlet${i}`]) str += String(ports + 1 - i);
     }
     return str || '0';
   }
@@ -211,11 +222,18 @@ module.exports = class KohlerDtvDevice extends Homey.Device {
     }
 
     // Update individual outlet toggle states from controller
+    // Only show outlets as active when the valve is running —
+    // system_info always reports hardware assignments even when off
     const ports = this.getStoreValue('portsAvailable') || 6;
+    const outlets = this.getStoreValue('outlets') || [];
+    this.log(`[OUTLET] Poll: valve${v} status=${info[`valve${v}_Currentstatus`]}, ports=${ports}`);
     for (let i = 1; i <= ports; i++) {
       const capId = `outlet_${i}`;
+      const rawVal = info[`valve${v}outlet${i}`];
+      const outlet = outlets.find((o) => o.number === i);
+      const isOpen = isOn && !!rawVal;
+      this.log(`[OUTLET] Poll: ${capId} (${outlet ? outlet.typeName : '?'}) raw=${JSON.stringify(rawVal)}, valveOn=${isOn} → ${isOpen}`);
       if (this.hasCapability(capId)) {
-        const isOpen = !!info[`valve${v}outlet${i}`];
         await this.setCapabilityValue(capId, isOpen).catch(this.error);
       }
     }

@@ -124,6 +124,11 @@ module.exports = class KohlerKonnectApp extends Homey.App {
     if (!ctrl) return;
     try {
       const info = await ctrl.api.getSystemInfo();
+      // One-time dump of full system_info for debugging
+      if (!ctrl._infoDumped) {
+        ctrl._infoDumped = true;
+        this.log('[DEBUG] Full system_info:', JSON.stringify(info, null, 2));
+      }
       ctrl.lastInfo = info;
       for (const device of ctrl.devices) {
         device.onSystemInfo(info).catch((err) => {

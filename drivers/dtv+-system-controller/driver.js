@@ -56,6 +56,8 @@ module.exports = class KohlerDtvDriver extends Homey.Driver {
     const turnOnCard = this.homey.flow.getActionCard('turn-on-outlet');
     turnOnCard.registerRunListener(async (args) => {
       const capId = `outlet_${args.outlet.id}`;
+      this.log(`[FLOW] turn-on-outlet: outlet=${JSON.stringify(args.outlet)}, capId=${capId}`);
+      this.log(`[FLOW] stored outlets: ${JSON.stringify(args.device.getStoreValue('outlets'))}`);
       await args.device.setCapabilityValue(capId, true);
       if (!args.device.getCapabilityValue('shower_toggle')) {
         await args.device._onValveOnOff(true);
